@@ -1,5 +1,6 @@
 package org.robolectric.shadows;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.O;
@@ -7,16 +8,19 @@ import static org.robolectric.shadow.api.Shadow.directlyOn;
 
 import android.app.ActivityManager;
 import android.app.IActivityManager;
+import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.os.Build.VERSION_CODES;
 import android.os.Process;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.HiddenApi;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
 import org.robolectric.annotation.Resetter;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.util.ReflectionHelpers;
 
 @Implements(ActivityManager.class)
@@ -104,6 +108,15 @@ public class ShadowActivityManager {
     processInfo.uid = Process.myUid();
   }
 
+  @HiddenApi
+  @Implementation(minSdk = JELLY_BEAN_MR1)
+  protected boolean switchUser(int userid) {
+    ShadowUserManager shadowUserManager =
+        Shadow.extract(RuntimeEnvironment.application.getSystemService(Context.USER_SERVICE));
+    shadowUserManager.switchUser(userid);
+    return true;
+  }
+
   @Implementation
   protected void killBackgroundProcesses(String packageName) {
     backgroundPackage = packageName;
@@ -155,8 +168,8 @@ public class ShadowActivityManager {
    * @param processes List of running processes.
    */
   public void setProcesses(List<ActivityManager.RunningAppProcessInfo> processes) {
-    this.processes.clear();
-    this.processes.addAll(processes);
+    ShadowActivityManager.processes.clear();
+    ShadowActivityManager.processes.addAll(processes);
   }
 
   /**

@@ -33,8 +33,8 @@ public class ShadowMap {
     final Map<String, String> shadowMap = new HashMap<>();
     final Map<String, String> shadowPickerMap = new HashMap<>();
     for (ShadowProvider provider : shadowProviders) {
-      shadowMap.putAll(provider.getShadowMap());
-      shadowPickerMap.putAll(provider.getShadowPickerMap());
+       shadowMap.putAll(provider.getShadowMap());
+       shadowPickerMap.putAll(provider.getShadowPickerMap());
     }
     return new ShadowMap(ImmutableMap.copyOf(shadowMap), Collections.emptyMap(),
         ImmutableMap.copyOf(shadowPickerMap));

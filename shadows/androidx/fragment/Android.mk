@@ -1,6 +1,6 @@
-################################################
-# Compile Robolectric shadows androidx fragment
-################################################
+################################################################
+# Compile Robolectric shadows androidx fragment                #
+################################################################
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
@@ -26,67 +26,69 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src/main/java)
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 
-######################################################
-# Compile Robolectric shadows androidx fragment tests
-######################################################
+################################################################
+# Androidx Shadows Shell app just for Robolectric test target. #
+################################################################
+include $(CLEAR_VARS)
+
+LOCAL_PACKAGE_NAME := Robolectric_shadows_androidx_fragment_shell_app
+
+LOCAL_MANIFEST_FILE := src/test/AndroidManifest.xml
+
+LOCAL_RESOURCE_DIR := $(LOCAL_PATH)/src/test/resources/res
+
+# This exists to coerce make into generating and compiling R.java.
+LOCAL_STATIC_JAVA_LIBRARIES := androidx.fragment_fragment
+
+LOCAL_MIN_SDK_VERSION := 16
+
+LOCAL_SDK_VERSION := current
+
+LOCAL_USE_AAPT2 := true
+
+LOCAL_PROGUARD_ENABLED := disabled
+
+include $(BUILD_PACKAGE)
+
+################################################################
+# Androidx Shadows test target.                                #
+################################################################
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := Robolectric_shadows_androidx_fragment_tests
+LOCAL_MODULE_CLASS := JAVA_LIBRARIES
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
 
-LOCAL_JAVA_RESOURCE_DIRS := src/test/resources/res
-
 LOCAL_JAVA_LIBRARIES := \
-  Robolectric_shadows_androidx_fragment \
-  Robolectric_shadows_framework \
-  Robolectric_annotations \
-  Robolectric_robolectric \
-  Robolectric_resources \
-  Robolectric_shadowapi \
-  Robolectric_utils \
-  Robolectric_junit \
-  robolectric-host-android_all \
-  robolectric-guava-25.1-jre \
-  robolectric-host-androidx \
-  robolectric-junit-4.12 \
-  robolectric-truth-0.42
+    robolectric_android-all-stub \
+    Robolectric_all-target \
+    truth-prebuilt
 
-include $(BUILD_HOST_JAVA_LIBRARY)
+LOCAL_INSTRUMENTATION_FOR := Robolectric_shadows_androidx_fragment_shell_app
 
-######################################################
-# Execute Robolectric shadows androidx fragment tests
-######################################################
+LOCAL_MODULE_TAGS := optional
+
+# Generate test_config.properties
+include external/robolectric-shadows/gen_test_config.mk
+
+include $(BUILD_STATIC_JAVA_LIBRARY)
+
+################################################################
+# Androidx Shadows runner target to run the previous target.   #
+################################################################
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := Run_robolectric_shadows_androidx_fragment_tests
 
-test_source_directory := $(LOCAL_PATH)/src/test/java
+LOCAL_JAVA_LIBRARIES := \
+    Robolectric_shadows_androidx_fragment_tests \
+    robolectric_android-all-stub \
+    Robolectric_all-target \
+    truth-prebuilt
 
-test_resources_directory := $(LOCAL_PATH)/src/test/resources
+LOCAL_TEST_PACKAGE := Robolectric_shadows_androidx_fragment_shell_app
 
-test_runtime_libraries := \
-  Robolectric_shadows_androidx_fragment \
-  Robolectric_shadows_androidx_fragment_tests \
-  Robolectric_shadows_framework \
-  Robolectric_annotations \
-  Robolectric_robolectric \
-  Robolectric_resources \
-  Robolectric_shadowapi \
-  Robolectric_sandbox \
-  Robolectric_junit \
-  Robolectric_utils \
-  robolectric-hamcrest-library-1.3 \
-  robolectric-bouncycastle-1.46 \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-host-android_all \
-  robolectric-asm-commons-6.0 \
-  robolectric-guava-25.1-jre \
-  robolectric-host-androidx \
-  robolectric-objenesis-2.5 \
-  robolectric-asm-tree-6.0 \
-  robolectric-junit-4.12 \
-  robolectric-truth-0.42 \
-  robolectric-asm-6.0
+LOCAL_ROBOTEST_FILES := $(call find-files-in-subdirs,$(LOCAL_PATH)/src/test/java,*Test.java,.)
 
-include external/robolectric-shadows/run_robolectric_module_tests.mk
+include external/robolectric-shadows/run_robotests.mk

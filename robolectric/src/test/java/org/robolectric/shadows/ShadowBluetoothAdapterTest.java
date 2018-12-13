@@ -145,8 +145,8 @@ public class ShadowBluetoothAdapterTest {
   @Test
   public void insecureRfcomm_notNull() throws Exception {
     assertThat(
-        bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord(
-            "serviceName", UUID.randomUUID()))
+            bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord(
+                "serviceName", UUID.randomUUID()))
         .isNotNull();
   }
 

@@ -206,10 +206,10 @@ public class AndroidManifestTest {
   @Test
   public void shouldReadTargetSdkVersionFromAndroidManifestOrDefaultToMin() throws Exception {
     assertThat(
-        newConfigWith(
-            "targetsdk42minsdk6.xml",
-            "android:targetSdkVersion=\"42\" android:minSdkVersion=\"7\"")
-            .getTargetSdkVersion())
+            newConfigWith(
+                    "targetsdk42minsdk6.xml",
+                    "android:targetSdkVersion=\"42\" android:minSdkVersion=\"7\"")
+                .getTargetSdkVersion())
         .isEqualTo(42);
     assertThat(newConfigWith("minsdk7.xml", "android:minSdkVersion=\"7\"").getTargetSdkVersion())
         .isEqualTo(7);
@@ -233,8 +233,8 @@ public class AndroidManifestTest {
   @Test
   public void shouldReadTargetSDKVersionOPreview() throws Exception {
     assertThat(
-        newConfigWith("TestAndroidManifestForPreview.xml", "android:targetSdkVersion=\"O\"")
-            .getTargetSdkVersion())
+            newConfigWith("TestAndroidManifestForPreview.xml", "android:targetSdkVersion=\"O\"")
+                .getTargetSdkVersion())
         .isEqualTo(26);
   }
 
@@ -547,7 +547,7 @@ public class AndroidManifestTest {
         "    <uses-sdk " + usesSdkAttrs + "/>\n" +
         "</manifest>\n";
     File f = temporaryFolder.newFile(fileName);
-    Files.write(contents, f, Charsets.UTF_8);
+    Files.asCharSink(f, Charsets.UTF_8).write(contents);
     return new AndroidManifest(Fs.newFile(f), null, null);
   }
 

@@ -14,7 +14,6 @@ import org.robolectric.res.ResourceTable;
 import org.robolectric.util.Scheduler;
 import org.robolectric.util.TempDirectory;
 
-
 public class RuntimeEnvironment {
   public static Context systemContext;
 

@@ -28,6 +28,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   robolectric-sqlite4java-0.282 \
   robolectric-hamcrest-core-1.3 \
   robolectric-hamcrest-library-1.3 \
+  robolectric-host-androidx-test-runner \
   robolectric-host-org_apache_http_legacy
 
 LOCAL_JAVA_RESOURCE_DIRS := \

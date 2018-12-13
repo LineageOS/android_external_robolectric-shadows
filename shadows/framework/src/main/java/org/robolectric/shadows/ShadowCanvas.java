@@ -130,7 +130,7 @@ public class ShadowCanvas {
     int y = (int) (top + translateY);
     if (x != 0 || y != 0) {
       appendDescription(" at (" + x + "," + y + ")");
-    }
+  }
 
     if (scaleX != 1 && scaleY != 1) {
       appendDescription(" scaled by (" + scaleX + "," + scaleY + ")");
@@ -449,7 +449,7 @@ public class ShadowCanvas {
     public final Paint paint;
 
     public ArcPaintHistoryEvent(RectF oval, float startAngle, float sweepAngle, boolean useCenter,
-        Paint paint) {
+                                Paint paint) {
       this.oval = oval;
       this.startAngle = startAngle;
       this.sweepAngle = sweepAngle;

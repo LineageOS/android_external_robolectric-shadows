@@ -21,7 +21,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
-import android.app.Application;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -52,20 +51,15 @@ public final class ShadowDevicePolicyManagerTest {
 
   @Before
   public void setUp() {
+    Context context = ApplicationProvider.getApplicationContext();
     devicePolicyManager =
-        (DevicePolicyManager)
-            ((Application) ApplicationProvider.getApplicationContext())
-                .getSystemService(Context.DEVICE_POLICY_SERVICE);
+        (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
 
-    userManager =
-        (UserManager)
-            ((Application) ApplicationProvider.getApplicationContext())
-                .getSystemService(Context.USER_SERVICE);
+    userManager = (UserManager) context.getSystemService(Context.USER_SERVICE);
 
     testComponent = new ComponentName("com.example.app", "DeviceAdminReceiver");
 
-    packageManager =
-        ((Application) ApplicationProvider.getApplicationContext()).getPackageManager();
+    packageManager = context.getPackageManager();
   }
 
   @Test
@@ -121,6 +115,25 @@ public final class ShadowDevicePolicyManagerTest {
     // WHEN DevicePolicyManager#getProfileOwner is called without a device owner
     // THEN the method should return null
     assertThat(devicePolicyManager.getDeviceOwner()).isNull();
+  }
+
+  @Test
+  @Config(minSdk = N)
+  public void isDeviceManagedShouldReturnTrueWhenThereIsADeviceOwner() {
+    // GIVEN a test component is the device owner app of the device
+    shadowOf(devicePolicyManager).setDeviceOwner(testComponent);
+
+    // WHEN DevicePolicyManager#isDeviceManaged is called
+    // THEN the method should return true
+    assertThat(devicePolicyManager.isDeviceManaged()).isTrue();
+  }
+
+  @Test
+  @Config(minSdk = N)
+  public void isDeviceManagedShouldReturnFalseWhenThereIsNoDeviceOwner() {
+    // WHEN DevicePolicyManager#isDeviceManaged is called without a device owner
+    // THEN the method should return false
+    assertThat(devicePolicyManager.isDeviceManaged()).isFalse();
   }
 
   @Test
@@ -904,8 +917,8 @@ public final class ShadowDevicePolicyManagerTest {
     shadowOf(packageManager).addPackage("package");
 
     assertThat(
-        devicePolicyManager.setPackagesSuspended(
-            testComponent, new String[] {"package"}, false))
+            devicePolicyManager.setPackagesSuspended(
+                testComponent, new String[] {"package"}, false))
         .isEmpty();
     assertThat(devicePolicyManager.isPackageSuspended(testComponent, "package")).isFalse();
   }

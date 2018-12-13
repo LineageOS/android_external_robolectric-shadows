@@ -501,7 +501,7 @@ public class ShadowArscAssetManager9 extends ShadowAssetManager.ArscBase {
     return cppAssetManagerRef;
   }
 
-  // static void NativeDestroy(JNIEnv* /*env*/, jclass /*clazz*/, jlong ptr) {
+    // static void NativeDestroy(JNIEnv* /*env*/, jclass /*clazz*/, jlong ptr) {
   @Implementation(minSdk = P)
   protected static void nativeDestroy(long ptr) {
     if (ptr == systemCppAssetManager2Ref) {
@@ -1171,7 +1171,7 @@ public class ShadowArscAssetManager9 extends ShadowAssetManager.ArscBase {
       }
 
       // if (name.type != null) {
-      result.append(name.type/*, name.type_len*/);
+        result.append(name.type/*, name.type_len*/);
       // } else {
       //   result.append( /*util.Utf16ToUtf8(StringPiece16(*/ name.type16 /*, name.type_len))*/);
       // }
@@ -1183,7 +1183,7 @@ public class ShadowArscAssetManager9 extends ShadowAssetManager.ArscBase {
       }
 
       // if (name.entry != null) {
-      result.append(name.entry/*, name.entry_len*/);
+        result.append(name.entry/*, name.entry_len*/);
       // } else {
       //   result.append( /*util.Utf16ToUtf8(StringPiece16(*/ name.entry16 /*, name.entry_len)*/);
       // }
@@ -1218,8 +1218,8 @@ public class ShadowArscAssetManager9 extends ShadowAssetManager.ArscBase {
 
     if (name.type != null) {
       return name.type;
-      // } else if (name.get().type16 != null) {
-      //   return name.get().type16; // env.NewString(reinterpret_cast<jchar*>(name.type16), name.type_len);
+    // } else if (name.get().type16 != null) {
+    //   return name.get().type16; // env.NewString(reinterpret_cast<jchar*>(name.type16), name.type_len);
     }
     return null;
   }
@@ -1235,8 +1235,8 @@ public class ShadowArscAssetManager9 extends ShadowAssetManager.ArscBase {
 
     if (name.entry != null) {
       return name.entry;
-      // } else if (name.entry16 != null) {
-      //   return name.entry16; // env.NewString(reinterpret_cast<jchar*>(name.entry16), name.entry_len);
+    // } else if (name.entry16 != null) {
+    //   return name.entry16; // env.NewString(reinterpret_cast<jchar*>(name.entry16), name.entry_len);
     }
     return null;
   }

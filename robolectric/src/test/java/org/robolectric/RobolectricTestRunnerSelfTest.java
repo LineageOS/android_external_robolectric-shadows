@@ -45,7 +45,7 @@ public class RobolectricTestRunnerSelfTest {
         .isEqualTo(appResources.getString(android.R.string.copy));
 
     assertThat(appResources.getString(R.string.howdy)).named("app resource")
-        .isNotNull();
+      .isNotNull();
     try {
       systemResources.getString(R.string.howdy);
       fail("Expected Exception not thrown");
@@ -102,7 +102,7 @@ public class RobolectricTestRunnerSelfTest {
     public void onCreate() {
       this.onCreateWasCalled = true;
     }
-
+    
     @Override
     public void onTerminate() {
       onTerminateCalledFromMain = Boolean.valueOf(RuntimeEnvironment.isMainThread());

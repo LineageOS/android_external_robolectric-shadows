@@ -372,16 +372,16 @@ public class ShadowMatrix {
   @Override
   public boolean equals(Object obj) {
     if (obj instanceof Matrix) {
-      return getSimpleMatrix(((Matrix) obj)).equals(simpleMatrix);
+        return getSimpleMatrix(((Matrix) obj)).equals(simpleMatrix);
     } else {
-      return obj instanceof ShadowMatrix && obj.equals(simpleMatrix);
+        return obj instanceof ShadowMatrix && obj.equals(simpleMatrix);
     }
   }
 
   @Implementation(minSdk = KITKAT)
   @Override
   public int hashCode() {
-    return Objects.hashCode(simpleMatrix);
+      return Objects.hashCode(simpleMatrix);
   }
 
   public String getDescription() {
@@ -412,9 +412,9 @@ public class ShadowMatrix {
     private static SimpleMatrix newIdentityMatrix() {
       return new SimpleMatrix(
           new float[] {
-              1.0f, 0.0f, 0.0f,
-              0.0f, 1.0f, 0.0f,
-              0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 1.0f,
           });
     }
 

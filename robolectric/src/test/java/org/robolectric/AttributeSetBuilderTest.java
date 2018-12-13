@@ -336,8 +336,8 @@ public class AttributeSetBuilderTest {
   public void getStyleAttribute_whenStyleIsBogus() throws Exception {
     try {
       Robolectric.buildAttributeSet()
-          .setStyleAttribute("@style/non_existent_style")
-          .build();
+            .setStyleAttribute("@style/non_existent_style")
+            .build();
       fail();
     } catch (IllegalArgumentException e) {
       assertThat(e)

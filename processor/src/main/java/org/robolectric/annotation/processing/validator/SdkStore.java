@@ -191,7 +191,7 @@ class SdkStore {
 
     private boolean typeIsNumeric(MethodExtraInfo sdkMethod, MethodExtraInfo implMethod) {
       return implMethod.returnType.equals("java.lang.Number")
-          && isNumericType(sdkMethod.returnType);
+      && isNumericType(sdkMethod.returnType);
     }
 
     private boolean typeIsOkForLooseSignatures(MethodExtraInfo implMethod, MethodExtraInfo sdkMethod) {
@@ -200,7 +200,7 @@ class SdkStore {
           implMethod.returnType.equals("java.lang.Object")
               // or Object[] for arrays...
               || (implMethod.returnType.equals("java.lang.Object[]")
-              && sdkMethod.returnType.endsWith("[]"));
+                  && sdkMethod.returnType.endsWith("[]"));
     }
 
     private boolean isNumericType(String type) {
@@ -255,9 +255,8 @@ class SdkStore {
 
     private JarFile ensureJar() {
       try {
-        URI uri = URI.create(path);
-        if ("classpath".equals(uri.getScheme())) {
-          return new JarFile(copyResourceToFile(uri.getSchemeSpecificPart()));
+        if (path.startsWith("classpath:")) {
+          return new JarFile(copyResourceToFile(URI.create(path).getSchemeSpecificPart()));
         } else {
           return new JarFile(path);
         }

@@ -151,9 +151,9 @@ public class ShadowViewRootImpl {
 
   @Resetter
   public static void reset() {
-    ReflectionHelpers.setStaticField(ViewRootImpl.class, "sRunQueues", new ThreadLocal<>());
-    ReflectionHelpers.setStaticField(ViewRootImpl.class, "sFirstDrawHandlers", new ArrayList<>());
-    ReflectionHelpers.setStaticField(ViewRootImpl.class, "sFirstDrawComplete", false);
-    ReflectionHelpers.setStaticField(ViewRootImpl.class, "sConfigCallbacks", new ArrayList<>());
+     ReflectionHelpers.setStaticField(ViewRootImpl.class, "sRunQueues", new ThreadLocal<>());
+     ReflectionHelpers.setStaticField(ViewRootImpl.class, "sFirstDrawHandlers", new ArrayList<>());
+     ReflectionHelpers.setStaticField(ViewRootImpl.class, "sFirstDrawComplete", false);
+     ReflectionHelpers.setStaticField(ViewRootImpl.class, "sConfigCallbacks", new ArrayList<>());
   }
 }

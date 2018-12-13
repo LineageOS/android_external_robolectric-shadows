@@ -43,9 +43,9 @@ public class ResourceLoaderTest {
   @Config(qualifiers="w0dp")
   public void checkDefaultBooleanValue() throws Exception {
     assertThat(
-        ApplicationProvider.getApplicationContext()
-            .getResources()
-            .getBoolean(R.bool.different_resource_boolean))
+            ApplicationProvider.getApplicationContext()
+                .getResources()
+                .getBoolean(R.bool.different_resource_boolean))
         .isEqualTo(false);
   }
 
@@ -53,12 +53,12 @@ public class ResourceLoaderTest {
   @Config(qualifiers="w820dp")
   public void checkQualifiedBooleanValue() throws Exception {
     assertThat(
-        ApplicationProvider.getApplicationContext()
-            .getResources()
-            .getBoolean(R.bool.different_resource_boolean))
+            ApplicationProvider.getApplicationContext()
+                .getResources()
+                .getBoolean(R.bool.different_resource_boolean))
         .isEqualTo(true);
   }
-
+  
   @Test
   public void checkForPollution1() throws Exception {
     checkForPollutionHelper();

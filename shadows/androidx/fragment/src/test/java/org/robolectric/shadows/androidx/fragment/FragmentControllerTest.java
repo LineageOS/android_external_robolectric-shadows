@@ -232,7 +232,7 @@ public class FragmentControllerTest {
 
   @Test
   public void
-  setupFragmentWithFragmentAndActivityAndContainViewIdAndBundle_fragmentHasCorrectLifecycle() {
+      setupFragmentWithFragmentAndActivityAndContainViewIdAndBundle_fragmentHasCorrectLifecycle() {
     Bundle testBundle = generateTestBundle();
     TranscriptFragment fragment =
         FragmentController.setupFragment(

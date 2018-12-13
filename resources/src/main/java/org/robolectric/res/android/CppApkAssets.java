@@ -253,9 +253,9 @@ public class CppApkAssets {
     // Must retain ownership of the IDMAP Asset so that all pointers to its mmapped data remain valid.
     loaded_apk.idmap_asset_ = idmap_asset;
 
-    // const StringPiece data(
-    //       reinterpret_cast<const char*>(loaded_apk.resources_asset_.getBuffer(true /*wordAligned*/)),
-    //       loaded_apk.resources_asset_.getLength());
+  // const StringPiece data(
+  //       reinterpret_cast<const char*>(loaded_apk.resources_asset_.getBuffer(true /*wordAligned*/)),
+  //       loaded_apk.resources_asset_.getLength());
     StringPiece data = new StringPiece(
         ByteBuffer.wrap(loaded_apk.resources_asset_.getBuffer(true /*wordAligned*/))
             .order(ByteOrder.LITTLE_ENDIAN),

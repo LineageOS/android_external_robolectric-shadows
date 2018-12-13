@@ -13,6 +13,7 @@ import static org.robolectric.Shadows.shadowOf;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
@@ -107,10 +108,10 @@ public class ShadowConnectivityManagerTest {
   @Test
   public void setConnectionType_shouldReturnTypeCorrectly() {
     shadowOfActiveNetworkInfo.setConnectionType(ConnectivityManager.TYPE_MOBILE);
-    assertThat(ConnectivityManager.TYPE_MOBILE).isEqualTo(shadowOfActiveNetworkInfo.getType());
+    assertThat(shadowOfActiveNetworkInfo.getType()).isEqualTo(ConnectivityManager.TYPE_MOBILE);
 
     shadowOfActiveNetworkInfo.setConnectionType(ConnectivityManager.TYPE_WIFI);
-    assertThat(ConnectivityManager.TYPE_WIFI).isEqualTo(shadowOfActiveNetworkInfo.getType());
+    assertThat(shadowOfActiveNetworkInfo.getType()).isEqualTo(ConnectivityManager.TYPE_WIFI);
   }
 
   @Test
@@ -135,8 +136,8 @@ public class ShadowConnectivityManagerTest {
 
     NetworkInfo info = connectivityManager.getActiveNetworkInfo();
 
-    assertThat(ConnectivityManager.TYPE_MOBILE_HIPRI).isEqualTo(info.getType());
-    assertThat(TelephonyManager.NETWORK_TYPE_EDGE).isEqualTo(info.getSubtype());
+    assertThat(info.getType()).isEqualTo(ConnectivityManager.TYPE_MOBILE_HIPRI);
+    assertThat(info.getSubtype()).isEqualTo(TelephonyManager.NETWORK_TYPE_EDGE);
     assertThat(info.isAvailable()).isTrue();
     assertThat(info.isConnected()).isFalse();
   }
@@ -170,8 +171,8 @@ public class ShadowConnectivityManagerTest {
 
     NetworkInfo info = connectivityManager.getActiveNetworkInfo();
 
-    assertThat(ConnectivityManager.TYPE_MOBILE_HIPRI).isEqualTo(info.getType());
-    assertThat(TelephonyManager.NETWORK_TYPE_EDGE).isEqualTo(info.getSubtype());
+    assertThat(info.getType()).isEqualTo(ConnectivityManager.TYPE_MOBILE_HIPRI);
+    assertThat(info.getSubtype()).isEqualTo(TelephonyManager.NETWORK_TYPE_EDGE);
     assertThat(info.isAvailable()).isTrue();
     assertThat(info.isConnected()).isFalse();
     assertThat(shadowOf(connectivityManager.getActiveNetwork()).getNetId()).isEqualTo(info.getType());
@@ -479,9 +480,9 @@ public class ShadowConnectivityManagerTest {
         shadowOf(connectivityManager).getActiveNetwork(), nc);
 
     assertThat(
-        shadowOf(connectivityManager)
-            .getNetworkCapabilities(shadowOf(connectivityManager).getActiveNetwork())
-            .hasCapability(NetworkCapabilities.NET_CAPABILITY_MMS))
+            shadowOf(connectivityManager)
+                .getNetworkCapabilities(shadowOf(connectivityManager).getActiveNetwork())
+                .hasCapability(NetworkCapabilities.NET_CAPABILITY_MMS))
         .isTrue();
   }
 
@@ -502,13 +503,32 @@ public class ShadowConnectivityManagerTest {
   public void setAirplaneMode() {
     connectivityManager.setAirplaneMode(false);
     assertThat(
-        Settings.Global.getInt(
-            getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, -1))
+            Settings.Global.getInt(
+                getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, -1))
         .isEqualTo(0);
     connectivityManager.setAirplaneMode(true);
     assertThat(
-        Settings.Global.getInt(
-            getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, -1))
+            Settings.Global.getInt(
+                getApplicationContext().getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, -1))
         .isEqualTo(1);
+  }
+
+  @Test
+  @Config(minSdk = LOLLIPOP)
+  public void getLinkProperties() {
+    Network network = shadowOf(connectivityManager).getActiveNetwork();
+    LinkProperties lp = ReflectionHelpers.callConstructor(LinkProperties.class);
+    shadowOf(connectivityManager).setLinkProperties(network, lp);
+
+    assertThat(connectivityManager.getLinkProperties(network)).isEqualTo(lp);
+  }
+
+  @Test
+  @Config(minSdk = LOLLIPOP)
+  public void getLinkProperties_shouldReturnNull() {
+    Network network = shadowOf(connectivityManager).getActiveNetwork();
+    shadowOf(connectivityManager).setLinkProperties(network, null);
+
+    assertThat(connectivityManager.getLinkProperties(network)).isNull();
   }
 }

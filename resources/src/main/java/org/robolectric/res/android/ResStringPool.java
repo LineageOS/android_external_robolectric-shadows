@@ -38,25 +38,25 @@ public class ResStringPool {
 
   private int                    mError;
 
-  byte[]                       mOwnedData;
+   byte[]                       mOwnedData;
   //private Object mOwnedData;
 
   private ResStringPool_header mHeader;
   private int                      mSize;
-  //    private mutable Mutex               mDecodeLock;
+//    private mutable Mutex               mDecodeLock;
 //    const uint32_t*             mEntries;
   private IntArray             mEntries;
-  //    const uint32_t*             mEntryStyles;
-  private IntArray             mEntryStyles;
-  //    const void*                 mStrings;
-  private int                 mStrings;
+//    const uint32_t*             mEntryStyles;
+    private IntArray             mEntryStyles;
+//    const void*                 mStrings;
+    private int                 mStrings;
   //private List<String> mStrings;
   //private String[] mCache;
   //private char16_t mutable**          mCache;
-  private int                    mStringPoolSize;    // number of uint16_t
-  //    const uint32_t*             mStyles;
-  private int             mStyles;
-  private int                    mStylePoolSize;    // number of int
+    private int                    mStringPoolSize;    // number of uint16_t
+//    const uint32_t*             mStyles;
+    private int             mStyles;
+    private int                    mStylePoolSize;    // number of int
 
   public ResStringPool() {
     mError = NO_INIT;
@@ -220,30 +220,30 @@ public class ResStringPool {
         return (mError=BAD_TYPE);
       }
 
-//      if (notDeviceEndian) {
-//        int i;
-//        uint32_t* e = final_cast<uint32_t*>(mEntries);
-//        for (i=0; i<mHeader.stringCount; i++) {
-//          e[i] = dtohl(mEntries[i]);
-//        }
-//        if (!(mHeader.flags&ResStringPool_header::UTF8_FLAG)) {
-//                final uint16_t* strings = (final uint16_t*)mStrings;
-//          uint16_t* s = final_cast<uint16_t*>(strings);
-//          for (i=0; i<mStringPoolSize; i++) {
-//            s[i] = dtohs(strings[i]);
-//          }
-//        }
-//      }
+      //      if (notDeviceEndian) {
+      //        int i;
+      //        uint32_t* e = final_cast<uint32_t*>(mEntries);
+      //        for (i=0; i<mHeader.stringCount; i++) {
+      //          e[i] = dtohl(mEntries[i]);
+      //        }
+      //        if (!(mHeader.flags&ResStringPool_header::UTF8_FLAG)) {
+      //                final uint16_t* strings = (final uint16_t*)mStrings;
+      //          uint16_t* s = final_cast<uint16_t*>(strings);
+      //          for (i=0; i<mStringPoolSize; i++) {
+      //            s[i] = dtohs(strings[i]);
+      //          }
+      //        }
+      //      }
 
-//      if ((mHeader->flags&ResStringPool_header::UTF8_FLAG &&
-//          ((uint8_t*)mStrings)[mStringPoolSize-1] != 0) ||
-//      (!(mHeader->flags&ResStringPool_header::UTF8_FLAG) &&
-//          ((uint16_t*)mStrings)[mStringPoolSize-1] != 0)) {
+      //      if ((mHeader->flags&ResStringPool_header::UTF8_FLAG &&
+      //          ((uint8_t*)mStrings)[mStringPoolSize-1] != 0) ||
+      //      (!(mHeader->flags&ResStringPool_header::UTF8_FLAG) &&
+      //          ((uint16_t*)mStrings)[mStringPoolSize-1] != 0)) {
 
-      if (isTruthy(mHeader.flags&ResStringPool_header.UTF8_FLAG) &&
-          (mHeader.getByte(mStrings + mStringPoolSize-1) != 0) ||
-          (!isTruthy(mHeader.flags&ResStringPool_header.UTF8_FLAG) &&
-              ((mHeader.getShort(mStrings + mStringPoolSize*2-2) != 0)))) {
+      if ((isTruthy(mHeader.flags & ResStringPool_header.UTF8_FLAG)
+              && (mHeader.getByte(mStrings + mStringPoolSize - 1) != 0))
+          || (!isTruthy(mHeader.flags & ResStringPool_header.UTF8_FLAG)
+              && (mHeader.getShort(mStrings + mStringPoolSize * 2 - 2) != 0))) {
         ALOGW("Bad string block: last string is not 0-terminated\n");
         return (mError=BAD_TYPE);
       }
@@ -264,7 +264,7 @@ public class ResStringPool {
       if ((mEntryStyles.myOffset() - mHeader.myOffset()) > (int)size) {
         ALOGW("Bad string block: entry of %d styles extends past data size %d\n",
             (int)(mEntryStyles.myOffset()),
-            (int)size);
+        (int)size);
         return (mError=BAD_TYPE);
       }
       mStyles = mHeader.stylesStart;
@@ -327,13 +327,13 @@ public class ResStringPool {
 
   public String stringAt(int idx) {
     if (mError == NO_ERROR && idx < mHeader.stringCount) {
-      final boolean isUTF8 = (mHeader.flags&ResStringPool_header.UTF8_FLAG) != 0;
+        final boolean isUTF8 = (mHeader.flags&ResStringPool_header.UTF8_FLAG) != 0;
 //        const uint32_t off = mEntries[idx]/(isUTF8?sizeof(uint8_t):sizeof(uint16_t));
       ByteBuffer buf = mHeader.myBuf();
       int bufOffset = mHeader.myOffset();
       // const uint32_t off = mEntries[idx]/(isUTF8?sizeof(uint8_t):sizeof(uint16_t));
       final int off = mEntries.get(idx)
-          /(isUTF8?1/*sizeof(uint8_t)*/:2/*sizeof(uint16_t)*/);
+            /(isUTF8?1/*sizeof(uint8_t)*/:2/*sizeof(uint16_t)*/);
       if (off < (mStringPoolSize-1)) {
         if (!isUTF8) {
           final int strings = mStrings;
@@ -535,18 +535,18 @@ public class ResStringPool {
 
     return NAME_NOT_FOUND;
   }
-  //
-  public int size() {
-    return mError == NO_ERROR ? mHeader.stringCount : 0;
-  }
+//
+    public int size() {
+      return mError == NO_ERROR ? mHeader.stringCount : 0;
+    }
 
-  int styleCount() {
-    return mError == NO_ERROR ? mHeader.styleCount : 0;
-  }
+    int styleCount() {
+      return mError == NO_ERROR ? mHeader.styleCount : 0;
+    }
 
-  int bytes() {
-    return mError == NO_ERROR ? mHeader.header.size : 0;
-  }
+    int bytes() {
+      return mError == NO_ERROR ? mHeader.header.size : 0;
+    }
 
   public boolean isUTF8() {
     return true;

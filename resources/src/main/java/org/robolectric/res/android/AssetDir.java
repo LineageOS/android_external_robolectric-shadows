@@ -17,8 +17,8 @@ public class AssetDir {
   }
 
   /*
-   * Vector-style access.
-   */
+ * Vector-style access.
+ */
   public int getFileCount() {
     return mFileInfo.size();
   }
@@ -49,8 +49,8 @@ public class AssetDir {
     FileInfo() {}
 
     FileInfo(String8 path) {      // useful for e.g. svect.indexOf
-      mFileName = path;
-      mFileType = FileType.kFileTypeUnknown;
+            mFileName = path;
+            mFileType = FileType.kFileTypeUnknown;
     }
 
     FileInfo(FileInfo src) {
@@ -106,7 +106,7 @@ public class AssetDir {
      * Returns the index of the matching entry, or -1 if none found.
      */
     static int findEntry(SortedVector<FileInfo> pVector,
-        String8 fileName) {
+             String8 fileName) {
       FileInfo tmpInfo = new FileInfo();
 
       tmpInfo.setFileName(fileName);

@@ -5,7 +5,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import android.app.Activity;
-import android.app.Application;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.ResultReceiver;
 import android.view.inputmethod.InputMethodManager;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -24,7 +27,7 @@ public class ShadowInputMethodManagerTest {
   public void setUp() throws Exception {
     manager =
         (InputMethodManager)
-            ((Application) ApplicationProvider.getApplicationContext())
+            ApplicationProvider.getApplicationContext()
                 .getSystemService(Activity.INPUT_METHOD_SERVICE);
     shadow = Shadows.shadowOf(manager);
   }
@@ -38,6 +41,24 @@ public class ShadowInputMethodManagerTest {
 
     manager.hideSoftInputFromWindow(null, 0);
     assertThat(shadow.isSoftInputVisible()).isFalse();
+  }
+
+  @Test
+  public void hideSoftInputFromWindow_shouldNotifiyResult_hidden() {
+    manager.showSoftInput(null, 0);
+
+    CapturingResultReceiver resultReceiver =
+        new CapturingResultReceiver(new Handler(Looper.getMainLooper()));
+    manager.hideSoftInputFromWindow(null, 0, resultReceiver);
+    assertThat(resultReceiver.resultCode).isEqualTo(InputMethodManager.RESULT_HIDDEN);
+  }
+
+  @Test
+  public void hideSoftInputFromWindow_shouldNotifiyResult_alreadHidden() {
+    CapturingResultReceiver resultReceiver =
+        new CapturingResultReceiver(new Handler(Looper.getMainLooper()));
+    manager.hideSoftInputFromWindow(null, 0, resultReceiver);
+    assertThat(resultReceiver.resultCode).isEqualTo(InputMethodManager.RESULT_UNCHANGED_HIDDEN);
   }
 
   @Test
@@ -60,5 +81,20 @@ public class ShadowInputMethodManagerTest {
 
     manager.toggleSoftInput(0, 0);
     verify(mockHandler).handleSoftInputVisibilityChange(true);
+  }
+
+  private static class CapturingResultReceiver extends ResultReceiver {
+
+    private int resultCode = -1;
+
+    public CapturingResultReceiver(Handler handler) {
+      super(handler);
+    }
+
+    @Override
+    protected void onReceiveResult(int resultCode, Bundle resultData) {
+      super.onReceiveResult(resultCode, resultData);
+      this.resultCode = resultCode;
+    }
   }
 }

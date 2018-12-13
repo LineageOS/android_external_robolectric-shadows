@@ -136,6 +136,7 @@ robolectric_target_to_host_jars := \
   robolectric-host-androidx-test-core:$(call java-lib-files, androidx.test.core) \
   robolectric-host-androidx-test-ext-junit:$(call java-lib-files, androidx.test.ext.junit) \
   robolectric-host-androidx-test-monitor:$(call java-lib-files, androidx.test.monitor) \
+  robolectric-host-androidx-test-runner:$(call java-lib-files, androidx.test.runner) \
   robolectric-host-androidx:$(call java-lib-files, androidx.fragment_fragment) \
   robolectric-host-android-support-v4:$(call java-lib-files, android-support-v4) \
   robolectric-host-android-support-multidex:$(call java-lib-files, android-support-multidex) \

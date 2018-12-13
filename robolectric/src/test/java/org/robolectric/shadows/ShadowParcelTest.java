@@ -639,7 +639,7 @@ public class ShadowParcelTest {
     parcel.setDataCapacity(8);
     assertThat(parcel.dataCapacity()).isEqualTo(8);
   }
-
+  
   @Test
   public void testWriteAndEnforceCompatibleInterface() {
     parcel.writeInterfaceToken("com.example.IMyInterface");
@@ -647,7 +647,7 @@ public class ShadowParcelTest {
     parcel.enforceInterface("com.example.IMyInterface");
     // Nothing explodes
   }
-
+  
   @Test
   public void testWriteAndEnforceIncompatibleInterface() {
     parcel.writeInterfaceToken("com.example.Derp");

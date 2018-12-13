@@ -18,12 +18,14 @@ import org.robolectric.annotation.Config;
 
 @RunWith(AndroidJUnit4.class)
 public class ShadowSettingsTest {
+
   private ContentResolver contentResolver;
+  private Application context;
 
   @Before
   public void setUp() throws Exception {
-    contentResolver =
-        ((Application) ApplicationProvider.getApplicationContext()).getContentResolver();
+    context = ApplicationProvider.getApplicationContext();
+    contentResolver = context.getContentResolver();
   }
 
   @Test
@@ -33,6 +35,9 @@ public class ShadowSettingsTest {
 
     Settings.System.putInt(contentResolver, "property", 1);
     assertThat(Settings.System.getInt(contentResolver, "property", 0)).isEqualTo(1);
+
+    Settings.System.putString(contentResolver, "property", "11");
+    assertThat(Settings.System.getInt(contentResolver, "property", 0)).isEqualTo(11);
   }
 
   @Test
@@ -42,6 +47,9 @@ public class ShadowSettingsTest {
 
     Settings.Secure.putInt(contentResolver, "property", 1);
     assertThat(Settings.Secure.getInt(contentResolver, "property", 0)).isEqualTo(1);
+
+    Settings.Secure.putString(contentResolver, "property", "11");
+    assertThat(Settings.Secure.getInt(contentResolver, "property", 0)).isEqualTo(11);
   }
 
   @Test
@@ -52,6 +60,9 @@ public class ShadowSettingsTest {
 
     Settings.Global.putInt(contentResolver, "property", 1);
     assertThat(Settings.Global.getInt(contentResolver, "property", 0)).isEqualTo(1);
+
+    Settings.Global.putString(contentResolver, "property", "11");
+    assertThat(Settings.Global.getInt(contentResolver, "property", 0)).isEqualTo(11);
   }
 
   @Test
@@ -60,6 +71,15 @@ public class ShadowSettingsTest {
 
     Settings.System.putString(contentResolver, "property", "value");
     assertThat(Settings.System.getString(contentResolver, "property")).isEqualTo("value");
+
+    Settings.System.putInt(contentResolver, "property", 123);
+    assertThat(Settings.System.getString(contentResolver, "property")).isEqualTo("123");
+
+    Settings.System.putLong(contentResolver, "property", 456L);
+    assertThat(Settings.System.getString(contentResolver, "property")).isEqualTo("456");
+
+    Settings.System.putFloat(contentResolver, "property", 7.89f);
+    assertThat(Settings.System.getString(contentResolver, "property")).isEqualTo("7.89");
   }
 
   @Test
@@ -68,6 +88,9 @@ public class ShadowSettingsTest {
     Settings.System.putLong(contentResolver, "property", 42L);
     assertThat(Settings.System.getLong(contentResolver, "property")).isEqualTo(42L);
     assertThat(Settings.System.getLong(contentResolver, "property", 10L)).isEqualTo(42L);
+
+    Settings.System.putString(contentResolver, "property", "11");
+    assertThat(Settings.System.getLong(contentResolver, "property", 0)).isEqualTo(11L);
   }
 
   @Test
@@ -75,6 +98,9 @@ public class ShadowSettingsTest {
     assertThat(Settings.System.getFloat(contentResolver, "property", 23.23f)).isEqualTo(23.23f);
     Settings.System.putFloat(contentResolver, "property", 42.42f);
     assertThat(Settings.System.getFloat(contentResolver, "property", 10L)).isEqualTo(42.42f);
+
+    Settings.System.putString(contentResolver, "property", "11.2");
+    assertThat(Settings.System.getFloat(contentResolver, "property", 0)).isEqualTo(11.2f);
   }
 
   @Test(expected = Settings.SettingNotFoundException.class)
@@ -95,92 +121,52 @@ public class ShadowSettingsTest {
   @Test
   public void testSet24HourMode_24() {
     ShadowSettings.set24HourTimeFormat(true);
-    assertThat(
-        DateFormat.is24HourFormat(
-            ((Application) ApplicationProvider.getApplicationContext()).getBaseContext()))
-        .isTrue();
+    assertThat(DateFormat.is24HourFormat(context.getBaseContext())).isTrue();
   }
 
   @Test
   public void testSet24HourMode_12() {
     ShadowSettings.set24HourTimeFormat(false);
-    assertThat(
-        DateFormat.is24HourFormat(
-            ((Application) ApplicationProvider.getApplicationContext()).getBaseContext()))
-        .isFalse();
+    assertThat(DateFormat.is24HourFormat(context.getBaseContext())).isFalse();
   }
 
   @Test
   public void testSetAdbEnabled_settingsSecure_true() {
     ShadowSettings.setAdbEnabled(true);
-
-    assertThat(
-        Secure.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Secure.ADB_ENABLED,
-            /* def= */ 0))
-        .isEqualTo(1);
+    assertThat(Secure.getInt(context.getContentResolver(), Secure.ADB_ENABLED, 0)).isEqualTo(1);
   }
 
   @Test
   public void testSetAdbEnabled_settingsSecure_false() {
     ShadowSettings.setAdbEnabled(false);
-
-    assertThat(
-        Secure.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Secure.ADB_ENABLED,
-            /* def= */ 1))
-        .isEqualTo(0);
+    assertThat(Secure.getInt(context.getContentResolver(), Secure.ADB_ENABLED, 1)).isEqualTo(0);
   }
 
   @Test
   @Config(minSdk = JELLY_BEAN_MR1)
   public void testSetAdbEnabled_sinceJBMR1_settingsGlobal_true() {
     ShadowSettings.setAdbEnabled(true);
-
-    assertThat(
-        Global.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Global.ADB_ENABLED,
-            /* def= */ 0))
-        .isEqualTo(1);
+    assertThat(Global.getInt(context.getContentResolver(), Global.ADB_ENABLED, 0)).isEqualTo(1);
   }
 
   @Test
   @Config(minSdk = JELLY_BEAN_MR1)
   public void testSetAdbEnabled_sinceJBMR1_settingsGlobal_false() {
     ShadowSettings.setAdbEnabled(false);
-
-    assertThat(
-        Global.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Global.ADB_ENABLED,
-            /* def= */ 1))
-        .isEqualTo(0);
+    assertThat(Global.getInt(context.getContentResolver(), Global.ADB_ENABLED, 1)).isEqualTo(0);
   }
 
   @Test
   public void testSetInstallNonMarketApps_settingsSecure_true() {
     ShadowSettings.setInstallNonMarketApps(true);
-
-    assertThat(
-        Secure.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Secure.INSTALL_NON_MARKET_APPS,
-            /* def= */ 0))
+    assertThat(Secure.getInt(context.getContentResolver(), Secure.INSTALL_NON_MARKET_APPS, 0))
         .isEqualTo(1);
   }
 
   @Test
   public void testSetInstallNonMarketApps_settingsSecure_false() {
     ShadowSettings.setInstallNonMarketApps(false);
-
-    assertThat(
-        Secure.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Secure.INSTALL_NON_MARKET_APPS,
-            /* def= */ 1))
+    assertThat(Secure.getInt(context.getContentResolver(), Secure.INSTALL_NON_MARKET_APPS, 1))
         .isEqualTo(0);
   }
 
@@ -188,12 +174,7 @@ public class ShadowSettingsTest {
   @Config(minSdk = JELLY_BEAN_MR1)
   public void testSetInstallNonMarketApps_sinceJBMR1_settingsGlobal_true() {
     ShadowSettings.setInstallNonMarketApps(true);
-
-    assertThat(
-        Global.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Global.INSTALL_NON_MARKET_APPS,
-            /* def= */ 0))
+    assertThat(Global.getInt(context.getContentResolver(), Global.INSTALL_NON_MARKET_APPS, 0))
         .isEqualTo(1);
   }
 
@@ -201,12 +182,7 @@ public class ShadowSettingsTest {
   @Config(minSdk = JELLY_BEAN_MR1)
   public void testSetInstallNonMarketApps_sinceJBMR1_settingsGlobal_false() {
     ShadowSettings.setInstallNonMarketApps(false);
-
-    assertThat(
-        Global.getInt(
-            ((Application) ApplicationProvider.getApplicationContext()).getContentResolver(),
-            Global.INSTALL_NON_MARKET_APPS,
-            /* def= */ 1))
+    assertThat(Global.getInt(context.getContentResolver(), Global.INSTALL_NON_MARKET_APPS, 1))
         .isEqualTo(0);
   }
 }

@@ -44,7 +44,7 @@ import org.robolectric.res.android.ResourceTypes.Res_value;
 // and https://android.googlesource.com/platform/frameworks/base/+/android-9.0.0_r12/libs/androidfw/AssetManager2.cpp
 public class CppAssetManager2 {
 //  #define ATRACE_TAG ATRACE_TAG_RESOURCES
-//
+//  
 //  #include "androidfw/AssetManager2.h"
 
 //#include <array>
@@ -791,7 +791,7 @@ public class CppAssetManager2 {
       // out_name.type16 = entry.type_string_ref.string();
       // out_name.type_len = out_name.type16 == null ? 0 : out_name.type16.length();
       // if (out_name.type16 == null) {
-      return false;
+        return false;
       // }
     }
 
@@ -802,7 +802,7 @@ public class CppAssetManager2 {
       // out_name.entry16 = entry.entry_string_ref.string();
       // out_name.entry_len = out_name.entry16 == null ? 0 : out_name.entry16.length();
       // if (out_name.entry16 == null) {
-      return false;
+        return false;
       // }
     }
     return true;
@@ -1055,7 +1055,7 @@ public class CppAssetManager2 {
     final ResolvedBag.Entry[] new_entry = new_bag.entries;
     int newEntryIndex = 0;
 
-    // const ResolvedBag::Entry* parent_entry = parent_bag->entries;
+  // const ResolvedBag::Entry* parent_entry = parent_bag->entries;
     int parentEntryIndex = 0;
     // final ResolvedBag.Entry parent_entry_end = parent_entry + parent_bag.entry_count;
     final int parentEntryCount = parent_bag.entry_count;

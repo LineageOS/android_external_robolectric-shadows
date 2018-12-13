@@ -98,7 +98,7 @@ public class ConfigDescription {
       if (part.startsWith("b+")) {
         // This is a "modified" BCP 47 language tag. Same semantics as BCP 47 tags,
         // except that the separator is "+" and not "-".
-        String[] subtags = part.substring(2).toLowerCase().split("\\+");
+        String[] subtags = part.substring(2).toLowerCase().split("\\+", 0);
         if (subtags.length == 1) {
           set_language(subtags[0]);
         } else if (subtags.length == 2) {
@@ -525,14 +525,14 @@ public class ConfigDescription {
       if (out != null) {
         out.screenLayout2 =
             (byte) ((out.screenLayout2 & ~ResTable_config.MASK_SCREENROUND) |
-                ResTable_config.SCREENROUND_ANY);
+                            ResTable_config.SCREENROUND_ANY);
       }
       return true;
     } else if (Objects.equals(name, "round")) {
       if (out != null) {
         out.screenLayout2 =
             (byte) ((out.screenLayout2 & ~ResTable_config.MASK_SCREENROUND) |
-                ResTable_config.SCREENROUND_YES);
+                            ResTable_config.SCREENROUND_YES);
       }
       return true;
     } else if (Objects.equals(name, "notround")) {
@@ -551,19 +551,19 @@ public class ConfigDescription {
       if (out != null)
         out.colorMode =
             (byte) ((out.colorMode & ~ResTable_config.MASK_WIDE_COLOR_GAMUT) |
-                ResTable_config.WIDE_COLOR_GAMUT_ANY);
+                            ResTable_config.WIDE_COLOR_GAMUT_ANY);
       return true;
     } else if (Objects.equals(name, "widecg")) {
       if (out != null)
         out.colorMode =
             (byte) ((out.colorMode & ~ResTable_config.MASK_WIDE_COLOR_GAMUT) |
-                ResTable_config.WIDE_COLOR_GAMUT_YES);
+                            ResTable_config.WIDE_COLOR_GAMUT_YES);
       return true;
     } else if (Objects.equals(name, "nowidecg")) {
       if (out != null)
         out.colorMode =
             (byte) ((out.colorMode & ~ResTable_config.MASK_WIDE_COLOR_GAMUT) |
-                ResTable_config.WIDE_COLOR_GAMUT_NO);
+                            ResTable_config.WIDE_COLOR_GAMUT_NO);
       return true;
     }
     return false;
@@ -574,19 +574,19 @@ public class ConfigDescription {
       if (out != null)
         out.colorMode =
             (byte) ((out.colorMode & ~ResTable_config.MASK_HDR) |
-                ResTable_config.HDR_ANY);
+                            ResTable_config.HDR_ANY);
       return true;
     } else if (Objects.equals(name, "highdr")) {
       if (out != null)
         out.colorMode =
             (byte) ((out.colorMode & ~ResTable_config.MASK_HDR) |
-                ResTable_config.HDR_YES);
+                            ResTable_config.HDR_YES);
       return true;
     } else if (Objects.equals(name, "lowdr")) {
       if (out != null)
         out.colorMode =
             (byte) ((out.colorMode & ~ResTable_config.MASK_HDR) |
-                ResTable_config.HDR_NO);
+                            ResTable_config.HDR_NO);
       return true;
     }
     return false;
@@ -989,7 +989,7 @@ public class ConfigDescription {
     if (((config.uiMode & ResTable_config.MASK_UI_MODE_TYPE)
         == ResTable_config.UI_MODE_TYPE_VR_HEADSET) ||
         (config.colorMode & ResTable_config.MASK_WIDE_COLOR_GAMUT) != 0 ||
-        (config.colorMode & ResTable_config.MASK_HDR) != 0) {
+            (config.colorMode & ResTable_config.MASK_HDR) != 0) {
       min_sdk = SDK_O;
     } else if (isTruthy(config.screenLayout2 & ResTable_config.MASK_SCREENROUND)) {
       min_sdk = SDK_MNC;

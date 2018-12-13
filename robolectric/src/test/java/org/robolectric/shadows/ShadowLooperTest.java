@@ -46,11 +46,11 @@ public class ShadowLooperTest {
     private boolean hasContinued = false;
     private Looper looper;
     private CountDownLatch started = new CountDownLatch(1);
-
+    
     public QuitThread() {
       super(testName.getMethodName());
     }
-
+    
     @Override
     public void run() {
       Looper.prepare();
@@ -60,14 +60,14 @@ public class ShadowLooperTest {
       hasContinued = true;
     }
   }
-
+  
   private QuitThread getQuitThread() throws InterruptedException {
     QuitThread qt = new QuitThread();
     qt.start();
     qt.started.await();
     return qt;
   }
-
+  
   @Test
   public void mainLooper_andMyLooper_shouldBeSame_onMainThread() {
     assertThat(Looper.myLooper()).isSameAs(Looper.getMainLooper());
@@ -88,18 +88,18 @@ public class ShadowLooperTest {
   public void shadowMainLooper_shouldBeShadowOfMainLooper() {
     assertThat(ShadowLooper.getShadowMainLooper()).isSameAs(shadowOf(Looper.getMainLooper()));
   }
-
+  
   @Test
   public void getLooperForThread_returnsLooperForAThreadThatHasOne() throws InterruptedException {
     QuitThread qt = getQuitThread();
     assertThat(ShadowLooper.getLooperForThread(qt)).isSameAs(qt.looper);
   }
-
+  
   @Test
   public void getLooperForThread_returnsLooperForMainThread() {
     assertThat(ShadowLooper.getLooperForThread(Thread.currentThread())).isSameAs(Looper.getMainLooper());
   }
-
+  
   @Test
   public void idleMainLooper_executesScheduledTasks() {
     final boolean[] wasRun = new boolean[]{false};
@@ -217,12 +217,12 @@ public class ShadowLooperTest {
     test.join(5000);
     assertThat(test.hasContinued).named("hasContinued:after").isTrue();
   }
-
+ 
   @Test(timeout = 1000)
   public void whenTestHarnessUsesDifferentThread_shouldStillHaveMainLooper() {
     assertThat(Looper.myLooper()).isSameAs(Looper.getMainLooper());
   }
-
+  
   @Test
   public void resetThreadLoopers_fromNonMainThread_shouldThrowISE() throws InterruptedException {
     final AtomicReference<Throwable> ex = new AtomicReference<>();
@@ -240,7 +240,7 @@ public class ShadowLooperTest {
     t.join();
     assertThat(ex.get()).isInstanceOf(IllegalStateException.class);
   }
-
+  
   @Test
   public void soStaticRefsToLoopersInAppWorksAcrossTests_shouldRetainSameLooperForMainThreadBetweenResetsButGiveItAFreshScheduler() throws Exception {
     Looper mainLooper = Looper.getMainLooper();

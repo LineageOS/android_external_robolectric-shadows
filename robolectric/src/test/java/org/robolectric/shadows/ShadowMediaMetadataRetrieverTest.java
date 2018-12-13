@@ -10,7 +10,6 @@ import static org.robolectric.shadows.ShadowMediaMetadataRetriever.addFrame;
 import static org.robolectric.shadows.ShadowMediaMetadataRetriever.addMetadata;
 import static org.robolectric.shadows.util.DataSource.toDataSource;
 
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
@@ -79,7 +78,7 @@ public class ShadowMediaMetadataRetrieverTest {
 
   @Test
   public void getFrameAtTime_shouldDependOnTime() {
-    Context context = (Application) ApplicationProvider.getApplicationContext();
+    Context context = ApplicationProvider.getApplicationContext();
     Uri uri = Uri.parse(path);
     addFrame(context, uri, 12, bitmap);
     addFrame(context, uri, 13, bitmap2);
@@ -92,7 +91,7 @@ public class ShadowMediaMetadataRetrieverTest {
 
   @Test
   public void setDataSource_ignoresHeadersWhenShadowed() {
-    Context context = (Application) ApplicationProvider.getApplicationContext();
+    Context context = ApplicationProvider.getApplicationContext();
     Uri uri = Uri.parse(path);
     Map<String, String> headers = new HashMap<>();
     headers.put("cookie", "nomnomnom");
@@ -127,7 +126,7 @@ public class ShadowMediaMetadataRetrieverTest {
       throw new RuntimeException("Shouldn't throw exception after reset", e);
     }
   }
-
+  
   @Test
   public void setDataSourceException_withAllowedException() {
     RuntimeException e = new RuntimeException("some dummy message");
@@ -138,8 +137,8 @@ public class ShadowMediaMetadataRetrieverTest {
     } catch (Exception caught) {
       assertThat(caught).isSameAs(e);
       assertThat(e.getStackTrace()[0].getClassName())
-          .named("Stack trace should originate in Shadow")
-          .isEqualTo(ShadowMediaMetadataRetriever.class.getName());
+         .named("Stack trace should originate in Shadow")
+         .isEqualTo(ShadowMediaMetadataRetriever.class.getName());
     }
   }
 }

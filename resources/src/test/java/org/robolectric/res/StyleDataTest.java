@@ -55,7 +55,7 @@ public class StyleDataTest {
   @Test
   public void getAttrValue_willReturnTrimmedAttributeValues() throws Exception {
     StyleData styleData = new StyleData("library.resource", "Theme_MyApp", "Theme_Material", asList(
-        new AttributeResource(myLibSearchViewStyle, "\n lib_value ", "library.resource")
+            new AttributeResource(myLibSearchViewStyle, "\n lib_value ", "library.resource")
     ));
 
     assertThat(styleData.getAttrValue(myAppSearchViewStyle).value).isEqualTo("\n lib_value ");

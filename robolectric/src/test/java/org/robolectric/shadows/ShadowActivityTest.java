@@ -18,6 +18,7 @@ import static org.robolectric.Robolectric.setupActivity;
 import static org.robolectric.RuntimeEnvironment.application;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -296,7 +297,7 @@ public class ShadowActivityTest {
   @Test
   public void shouldRetrievePackageNameFromTheManifest() throws Exception {
     assertThat(Robolectric.setupActivity(Activity.class).getPackageName())
-        .isEqualTo(((Application) ApplicationProvider.getApplicationContext()).getPackageName());
+        .isEqualTo(ApplicationProvider.getApplicationContext().getPackageName());
   }
 
   @Test
@@ -844,8 +845,9 @@ public class ShadowActivityTest {
   public void shouldCallActivityLifecycleCallbacks() {
     final List<String> transcript = new ArrayList<>();
     final ActivityController<Activity> controller = buildActivity(Activity.class);
-    ((Application) ApplicationProvider.getApplicationContext())
-        .registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks(transcript));
+    Application applicationContext = ApplicationProvider.getApplicationContext();
+    applicationContext.registerActivityLifecycleCallbacks(
+        new ActivityLifecycleCallbacks(transcript));
 
     controller.create();
     assertThat(transcript).containsExactly("onActivityCreated");
@@ -918,6 +920,23 @@ public class ShadowActivityTest {
 
     activity.stopLockTask();
     assertThat(shadowActivity.isLockTask()).isFalse();
+  }
+
+  @Test
+  @Config(minSdk = M)
+  public void getPermission_shouldReturnRequestedPermissions() {
+    // GIVEN
+    String[] permission = {Manifest.permission.CAMERA};
+    int requestCode = 1007;
+    Activity activity = Robolectric.setupActivity(Activity.class);
+
+    // WHEN
+    activity.requestPermissions(permission, requestCode);
+
+    // THEN
+    ShadowActivity.PermissionsRequest request = shadowOf(activity).getLastRequestedPermission();
+    assertThat(request.requestCode).isEqualTo(requestCode);
+    assertThat(request.requestedPermissions).isEqualTo(permission);
   }
 
   /////////////////////////////

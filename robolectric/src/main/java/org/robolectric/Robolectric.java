@@ -81,12 +81,12 @@ public class Robolectric {
   }
 
   public static <T extends Fragment> FragmentController<T> buildFragment(Class<T> fragmentClass,
-      Bundle arguments) {
+                                                                         Bundle arguments) {
     return FragmentController.of(ReflectionHelpers.callConstructor(fragmentClass), arguments);
   }
 
   public static <T extends Fragment> FragmentController<T> buildFragment(Class<T> fragmentClass,
-      Class<? extends Activity> activityClass) {
+                                                                         Class<? extends Activity> activityClass) {
     return FragmentController.of(ReflectionHelpers.callConstructor(fragmentClass), activityClass);
   }
 
@@ -95,27 +95,27 @@ public class Robolectric {
   }
 
   public static <T extends Fragment> FragmentController<T> buildFragment(Class<T> fragmentClass,
-      Intent intent,
-      Bundle arguments) {
+                                                                         Intent intent,
+                                                                         Bundle arguments) {
     return FragmentController.of(ReflectionHelpers.callConstructor(fragmentClass), intent, arguments);
   }
 
   public static <T extends Fragment> FragmentController<T> buildFragment(Class<T> fragmentClass,
-      Class<? extends Activity> activityClass,
-      Intent intent) {
+                                                                         Class<? extends Activity> activityClass,
+                                                                         Intent intent) {
     return FragmentController.of(ReflectionHelpers.callConstructor(fragmentClass), activityClass, intent);
   }
 
   public static <T extends Fragment> FragmentController<T> buildFragment(Class<T> fragmentClass,
-      Class<? extends Activity> activityClass,
-      Bundle arguments) {
+                                                                         Class<? extends Activity> activityClass,
+                                                                         Bundle arguments) {
     return FragmentController.of(ReflectionHelpers.callConstructor(fragmentClass), activityClass, arguments);
   }
 
   public static <T extends Fragment> FragmentController<T> buildFragment(Class<T> fragmentClass,
-      Class<? extends Activity> activityClass,
-      Intent intent,
-      Bundle arguments) {
+                                                                         Class<? extends Activity> activityClass,
+                                                                         Intent intent,
+                                                                         Bundle arguments) {
     return FragmentController.of(ReflectionHelpers.callConstructor(fragmentClass), activityClass, intent, arguments);
   }
 

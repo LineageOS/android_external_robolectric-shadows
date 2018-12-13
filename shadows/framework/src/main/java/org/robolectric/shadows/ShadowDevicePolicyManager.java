@@ -32,8 +32,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Process;
 import android.text.TextUtils;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -256,6 +254,12 @@ public class ShadowDevicePolicyManager {
   @Implementation(minSdk = JELLY_BEAN_MR2)
   protected String getDeviceOwner() {
     return deviceOwner != null ? deviceOwner.getPackageName() : null;
+  }
+
+  /** @see #setDeviceOwner(ComponentName) */
+  @Implementation(minSdk = N)
+  public boolean isDeviceManaged() {
+    return getDeviceOwner() != null;
   }
 
   /** @see #setProfileOwner(ComponentName) */

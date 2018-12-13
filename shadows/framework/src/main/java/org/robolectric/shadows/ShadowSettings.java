@@ -31,24 +31,24 @@ public class ShadowSettings {
     private static final Map<ContentResolver, Map<String, String>> dataMap = new WeakHashMap<>();
 
     @Implementation(minSdk = JELLY_BEAN_MR1)
-    public static boolean putStringForUser(ContentResolver cr, String name, String value,
+    protected static boolean putStringForUser(ContentResolver cr, String name, String value,
         int userHandle) {
       return putString(cr, name, value);
     }
 
     @Implementation(minSdk = JELLY_BEAN_MR1)
-    public static String getStringForUser(ContentResolver cr, String name, int userHandle) {
+    protected static String getStringForUser(ContentResolver cr, String name, int userHandle) {
       return getString(cr, name);
     }
 
     @Implementation
-    public static boolean putString(ContentResolver cr, String name, String value) {
+    protected static boolean putString(ContentResolver cr, String name, String value) {
       get(cr).put(name, value);
       return true;
     }
 
     @Implementation
-    public static String getString(ContentResolver cr, String name) {
+    protected static String getString(ContentResolver cr, String name) {
       return get(cr).get(name);
     }
 
@@ -67,24 +67,24 @@ public class ShadowSettings {
     private static final Map<ContentResolver, Map<String, String>> dataMap = new WeakHashMap<>();
 
     @Implementation(minSdk = JELLY_BEAN_MR1)
-    public static boolean putStringForUser(ContentResolver cr, String name, String value,
+    protected static boolean putStringForUser(ContentResolver cr, String name, String value,
         int userHandle) {
       return putString(cr, name, value);
     }
 
     @Implementation(minSdk = JELLY_BEAN_MR1)
-    public static String getStringForUser(ContentResolver cr, String name, int userHandle) {
+    protected static String getStringForUser(ContentResolver cr, String name, int userHandle) {
       return getString(cr, name);
     }
 
     @Implementation
-    public static boolean putString(ContentResolver cr, String name, String value) {
+    protected static boolean putString(ContentResolver cr, String name, String value) {
       get(cr).put(name, value);
       return true;
     }
 
     @Implementation
-    public static String getString(ContentResolver cr, String name) {
+    protected static String getString(ContentResolver cr, String name) {
       return get(cr).get(name);
     }
 
@@ -194,24 +194,24 @@ public class ShadowSettings {
     private static final Map<ContentResolver, Map<String, String>> dataMap = new WeakHashMap<>();
 
     @Implementation(minSdk = JELLY_BEAN_MR1)
-    public static boolean putStringForUser(ContentResolver cr, String name, String value,
+    protected static boolean putStringForUser(ContentResolver cr, String name, String value,
         int userHandle) {
       return putString(cr, name, value);
     }
 
     @Implementation(minSdk = JELLY_BEAN_MR1)
-    public static String getStringForUser(ContentResolver cr, String name, int userHandle) {
+    protected static String getStringForUser(ContentResolver cr, String name, int userHandle) {
       return getString(cr, name);
     }
 
     @Implementation
-    public static boolean putString(ContentResolver cr, String name, String value) {
+    protected static boolean putString(ContentResolver cr, String name, String value) {
       get(cr).put(name, value);
       return true;
     }
 
     @Implementation
-    public static String getString(ContentResolver cr, String name) {
+    protected static String getString(ContentResolver cr, String name) {
       return get(cr).get(name);
     }
 
@@ -231,7 +231,14 @@ public class ShadowSettings {
    * @param isAirplaneMode new status for airplane mode
    */
   public static void setAirplaneMode(boolean isAirplaneMode) {
-    Settings.System.putInt(RuntimeEnvironment.application.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, isAirplaneMode ? 1 : 0);
+    Settings.Global.putInt(
+        RuntimeEnvironment.application.getContentResolver(),
+        Settings.Global.AIRPLANE_MODE_ON,
+        isAirplaneMode ? 1 : 0);
+    Settings.System.putInt(
+        RuntimeEnvironment.application.getContentResolver(),
+        Settings.System.AIRPLANE_MODE_ON,
+        isAirplaneMode ? 1 : 0);
   }
 
   /**
@@ -240,7 +247,10 @@ public class ShadowSettings {
    * @param isOn new status for wifi mode
    */
   public static void setWifiOn(boolean isOn) {
-    Settings.Secure.putInt(RuntimeEnvironment.application.getContentResolver(), Settings.Secure.WIFI_ON, isOn ? 1 : 0);
+    Settings.Global.putInt(
+        RuntimeEnvironment.application.getContentResolver(), Settings.Global.WIFI_ON, isOn ? 1 : 0);
+    Settings.System.putInt(
+        RuntimeEnvironment.application.getContentResolver(), Settings.System.WIFI_ON, isOn ? 1 : 0);
   }
 
   /**

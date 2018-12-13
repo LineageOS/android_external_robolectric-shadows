@@ -9,6 +9,7 @@ import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.P;
 import static com.google.common.util.concurrent.Futures.immediateFuture;
 import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+import static org.robolectric.shadow.api.Shadow.directlyOn;
 
 import android.app.Activity;
 import android.app.ActivityThread;
@@ -28,7 +29,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Process;
 import android.os.UserHandle;
+import android.util.Pair;
 import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -47,12 +50,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
+import org.robolectric.annotation.RealObject;
 import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowActivity.IntentForResult;
 import org.robolectric.shadows.ShadowApplication.Wrapper;
 
 @Implements(value = Instrumentation.class, looseSignatures = true)
 public class ShadowInstrumentation {
+
+  @RealObject private Instrumentation realObject;
 
   private List<Intent> startedActivities = new ArrayList<>();
   private List<IntentForResult> startedActivitiesForResults = new ArrayList<>();
@@ -63,7 +69,8 @@ public class ShadowInstrumentation {
   private List<ServiceConnection> boundServiceConnections = new ArrayList<>();
   private List<ServiceConnection> unboundServiceConnections = new ArrayList<>();
   private List<Wrapper> registeredReceivers = new ArrayList<>();
-  private Set<String> grantedPermissions = new HashSet<>();
+  // map of pid+uid to granted permissions
+  private final Map<Pair<Integer, Integer>, Set<String>> grantedPermissionsMap = new HashMap<>();
   private boolean unbindServiceShouldThrowIllegalArgument = false;
   private Map<Intent.FilterComparison, ServiceConnectionDataWrapper>
       serviceConnectionDataForIntent = new HashMap<>();
@@ -92,8 +99,15 @@ public class ShadowInstrumentation {
       Intent intent,
       int requestCode,
       Bundle options) {
+
     verifyActivityInManifest(intent);
-    return logStartedActivity(intent, requestCode, options);
+    logStartedActivity(intent, requestCode, options);
+
+    if (who == null) {
+      return null;
+    }
+    return directlyOn(realObject, Instrumentation.class)
+        .execStartActivity(who, contextThread, token, target, intent, requestCode, options);
   }
 
   @Implementation(maxSdk = LOLLIPOP_MR1)
@@ -106,14 +120,14 @@ public class ShadowInstrumentation {
       int requestCode,
       Bundle options) {
     verifyActivityInManifest(intent);
-    return logStartedActivity(intent, requestCode, options);
+    logStartedActivity(intent, requestCode, options);
+    return null;
   }
 
-  private ActivityResult logStartedActivity(Intent intent, int requestCode, Bundle options) {
+  private void logStartedActivity(Intent intent, int requestCode, Bundle options) {
     startedActivities.add(intent);
     intentRequestCodeMap.put(new FilterComparison(intent), requestCode);
     startedActivitiesForResults.add(new IntentForResult(intent, requestCode, options));
-    return null;
   }
 
   private void verifyActivityInManifest(Intent intent) {
@@ -152,7 +166,10 @@ public class ShadowInstrumentation {
       int requestCode,
       Bundle options) {
     verifyActivityInManifest(intent);
-    return logStartedActivity(intent, requestCode, options);
+    logStartedActivity(intent, requestCode, options);
+
+    return directlyOn(realObject, Instrumentation.class)
+        .execStartActivity(who, contextThread, token, target, intent, requestCode, options);
   }
 
   @Implementation(minSdk = JELLY_BEAN_MR1)
@@ -670,16 +687,35 @@ public class ShadowInstrumentation {
   }
 
   int checkPermission(String permission, int pid, int uid) {
-    return grantedPermissions.contains(permission) ? PERMISSION_GRANTED : PERMISSION_DENIED;
+    Set<String> grantedPermissionsForPidUid = grantedPermissionsMap.get(new Pair(pid, uid));
+    return grantedPermissionsForPidUid != null && grantedPermissionsForPidUid.contains(permission)
+        ? PERMISSION_GRANTED
+        : PERMISSION_DENIED;
   }
 
   void grantPermissions(String... permissionNames) {
-    Collections.addAll(grantedPermissions, permissionNames);
+    grantPermissions(Process.myPid(), Process.myUid(), permissionNames);
+  }
+
+  void grantPermissions(int pid, int uid, String... permissions) {
+    Set<String> grantedPermissionsForPidUid = grantedPermissionsMap.get(new Pair<>(pid, uid));
+    if (grantedPermissionsForPidUid == null) {
+      grantedPermissionsForPidUid = new HashSet<>();
+      grantedPermissionsMap.put(new Pair<>(pid, uid), grantedPermissionsForPidUid);
+    }
+    Collections.addAll(grantedPermissionsForPidUid, permissions);
   }
 
   void denyPermissions(String... permissionNames) {
-    for (String permissionName : permissionNames) {
-      grantedPermissions.remove(permissionName);
+    denyPermissions(Process.myPid(), Process.myUid(), permissionNames);
+  }
+
+  void denyPermissions(int pid, int uid, String... permissions) {
+    Set<String> grantedPermissionsForPidUid = grantedPermissionsMap.get(new Pair<>(pid, uid));
+    if (grantedPermissionsForPidUid != null) {
+      for (String permissionName : permissions) {
+        grantedPermissionsForPidUid.remove(permissionName);
+      }
     }
   }
 
@@ -693,6 +729,9 @@ public class ShadowInstrumentation {
     }
     return mainHandler;
   }
+
+
+
 
   private static final class BroadcastResultHolder {
     private final int resultCode;

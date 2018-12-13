@@ -11,7 +11,7 @@ import org.robolectric.shadow.api.Shadow;
 
 @Implements(ListPopupWindow.class)
 public class ShadowListPopupWindow {
-
+  
   @RealObject
   private ListPopupWindow realListPopupWindow;
 

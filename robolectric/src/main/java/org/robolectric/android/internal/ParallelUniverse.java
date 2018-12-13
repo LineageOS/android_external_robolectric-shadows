@@ -37,6 +37,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.robolectric.ApkLoader;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.Bootstrap;
+import org.robolectric.android.fakes.RoboMonitoringInstrumentation;
 import org.robolectric.annotation.Config;
 import org.robolectric.internal.ParallelUniverseInterface;
 import org.robolectric.internal.SdkConfig;
@@ -157,23 +158,7 @@ public class ParallelUniverse implements ParallelUniverseInterface {
       applicationInfo.processName = parsedPackage.packageName;
     }
 
-    // TempDirectory tempDirectory = RuntimeEnvironment.getTempDirectory();
-    // packageInfo.setVolumeUuid(tempDirectory.createIfNotExists(packageInfo.packageName +
-    // "-dataDir").toAbsolutePath().toString());
-    setUpPackageStorage(applicationInfo);
-
-    if (sdkConfig.getApiLevel() <= VERSION_CODES.KITKAT) {
-      String sourcePath = ReflectionHelpers.getField(parsedPackage, "mPath");
-      if (sourcePath == null) {
-        sourcePath = RuntimeEnvironment.getTempDirectory()
-            .createIfNotExists("sourceDir").toString();
-      }
-      applicationInfo.publicSourceDir = sourcePath;
-      applicationInfo.sourceDir = sourcePath;
-    } else {
-      applicationInfo.publicSourceDir = parsedPackage.codePath;
-      applicationInfo.sourceDir = parsedPackage.codePath;
-    }
+    setUpPackageStorage(applicationInfo, parsedPackage);
 
     // Bit of a hack... Context.createPackageContext() is called before the application is created.
     // It calls through
@@ -344,7 +329,7 @@ public class ParallelUniverse implements ParallelUniverseInterface {
   private static Instrumentation createInstrumentation(
       ActivityThread activityThread,
       ApplicationInfo applicationInfo, Application application) {
-    Instrumentation androidInstrumentation = createInstrumentation();
+    Instrumentation androidInstrumentation = new RoboMonitoringInstrumentation();
     ReflectionHelpers.setField(activityThread, "mInstrumentation", androidInstrumentation);
 
     final ComponentName component =
@@ -369,21 +354,6 @@ public class ParallelUniverse implements ParallelUniverseInterface {
     }
 
     return androidInstrumentation;
-  }
-
-  private static Instrumentation createInstrumentation() {
-    // Use RoboMonitoringInstrumentation if its parent class from optional dependency
-    // androidx.test is
-    // available. Otherwise use Instrumentation
-    try {
-      Class<? extends Instrumentation> roboInstrumentationClass =
-          Class.forName("org.robolectric.android.fakes.RoboMonitoringInstrumentation")
-              .asSubclass(Instrumentation.class);
-      return ReflectionHelpers.newInstance(roboInstrumentationClass);
-    } catch (ClassNotFoundException | NoClassDefFoundError | VerifyError e) {
-      // fall through
-    }
-    return new Instrumentation();
   }
 
   /**
@@ -415,30 +385,45 @@ public class ParallelUniverse implements ParallelUniverseInterface {
     return RuntimeEnvironment.application;
   }
 
-  private static void setUpPackageStorage(ApplicationInfo applicationInfo) {
-    TempDirectory tempDirectory = RuntimeEnvironment.getTempDirectory();
-    applicationInfo.sourceDir =
-        tempDirectory
-            .createIfNotExists(applicationInfo.packageName + "-sourceDir")
-            .toAbsolutePath()
-            .toString();
-    applicationInfo.publicSourceDir =
-        tempDirectory
-            .createIfNotExists(applicationInfo.packageName + "-publicSourceDir")
-            .toAbsolutePath()
-            .toString();
-    applicationInfo.dataDir =
-        tempDirectory
-            .createIfNotExists(applicationInfo.packageName + "-dataDir")
-            .toAbsolutePath()
-            .toString();
+  // TODO(christianw): reconcile with ShadowPackageManager.setUpPackageStorage
+  private void setUpPackageStorage(ApplicationInfo applicationInfo,
+      PackageParser.Package parsedPackage) {
+    // TempDirectory tempDirectory = RuntimeEnvironment.getTempDirectory();
+    // packageInfo.setVolumeUuid(tempDirectory.createIfNotExists(packageInfo.packageName +
+    // "-dataDir").toAbsolutePath().toString());
+
+    if (RuntimeEnvironment.useLegacyResources()) {
+      applicationInfo.sourceDir =
+          createTempDir(applicationInfo.packageName + "-sourceDir");
+      applicationInfo.publicSourceDir =
+          createTempDir(applicationInfo.packageName + "-publicSourceDir");
+    } else {
+      if (sdkConfig.getApiLevel() <= VERSION_CODES.KITKAT) {
+        String sourcePath = ReflectionHelpers.getField(parsedPackage, "mPath");
+        if (sourcePath == null) {
+          sourcePath = createTempDir("sourceDir");
+        }
+        applicationInfo.publicSourceDir = sourcePath;
+        applicationInfo.sourceDir = sourcePath;
+      } else {
+        applicationInfo.publicSourceDir = parsedPackage.codePath;
+        applicationInfo.sourceDir = parsedPackage.codePath;
+      }
+    }
+
+    applicationInfo.dataDir = createTempDir(applicationInfo.packageName + "-dataDir");
 
     if (RuntimeEnvironment.getApiLevel() >= Build.VERSION_CODES.N) {
-      applicationInfo.credentialProtectedDataDir =
-          tempDirectory.createIfNotExists("userDataDir").toAbsolutePath().toString();
-      applicationInfo.deviceProtectedDataDir =
-          tempDirectory.createIfNotExists("deviceDataDir").toAbsolutePath().toString();
+      applicationInfo.credentialProtectedDataDir = createTempDir("userDataDir");
+      applicationInfo.deviceProtectedDataDir = createTempDir("deviceDataDir");
     }
+  }
+
+  private String createTempDir(String name) {
+    return RuntimeEnvironment.getTempDirectory()
+        .createIfNotExists(name)
+        .toAbsolutePath()
+        .toString();
   }
 
   // TODO move/replace this with packageManager
@@ -456,7 +441,7 @@ public class ParallelUniverse implements ParallelUniverseInterface {
   }
 
   private static String replaceLastDotWith$IfInnerStaticClass(String receiverClassName) {
-    String[] splits = receiverClassName.split("\\.");
+    String[] splits = receiverClassName.split("\\.", 0);
     String staticInnerClassRegex = "[A-Z][a-zA-Z]*";
     if (splits.length > 1
         && splits[splits.length - 1].matches(staticInnerClassRegex)

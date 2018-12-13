@@ -85,8 +85,8 @@ public class ShadowWebView extends ShadowViewGroup {
                       return Proxy.newProxyInstance(
                           classLoader,
                           new Class[] {
-                              getClassNamed("android.webkit.WebViewProvider$ViewDelegate"),
-                              getClassNamed("android.webkit.WebViewProvider$ScrollDelegate")
+                            getClassNamed("android.webkit.WebViewProvider$ViewDelegate"),
+                            getClassNamed("android.webkit.WebViewProvider$ScrollDelegate")
                           },
                           new InvocationHandler() {
                             @Override
@@ -398,7 +398,7 @@ public class ShadowWebView extends ShadowViewGroup {
 
   @Resetter
   public static void reset() {
-    packageInfo = null;
+     packageInfo = null;
   }
 
   public static void setWebContentsDebuggingEnabled(boolean enabled) {}

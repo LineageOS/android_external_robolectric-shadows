@@ -1,15 +1,16 @@
 package org.robolectric.shadows.multidex;
 
 import android.content.Context;
-import androidx.multidex.MultiDex;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-@Implements(MultiDex.class)
-public class ShadowMultiDex {
+@Implements(className = "androidx.multidex.MultiDex")
+@SuppressWarnings("robolectric.internal.IgnoreMissingClass")
+public class ShadowAndroidXMultiDex {
 
   @Implementation
-  public static void install(Context context) {
+  protected static void install(Context context) {
     // Do nothing since with Robolectric nothing is dexed.
   }
+
 }

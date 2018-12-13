@@ -75,9 +75,9 @@ public class DrawableResourceLoaderTest {
     assertEquals(
         6,
         ((LayerDrawable)
-            ApplicationProvider.getApplicationContext()
-                .getResources()
-                .getDrawable(R.drawable.rainbow))
+                ApplicationProvider.getApplicationContext()
+                    .getResources()
+                    .getDrawable(R.drawable.rainbow))
             .getNumberOfLayers());
   }
 
@@ -86,9 +86,9 @@ public class DrawableResourceLoaderTest {
     assertEquals(
         8,
         ((LayerDrawable)
-            ApplicationProvider.getApplicationContext()
-                .getResources()
-                .getDrawable(R.drawable.rainbow))
+                ApplicationProvider.getApplicationContext()
+                    .getResources()
+                    .getDrawable(R.drawable.rainbow))
             .getNumberOfLayers());
   }
 

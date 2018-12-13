@@ -3,16 +3,15 @@ package org.robolectric.shadows;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.M;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Parcel;
 import android.util.DisplayMetrics;
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.Buffer;
@@ -186,13 +185,8 @@ public class ShadowBitmap {
 
   @Implementation
   protected boolean compress(Bitmap.CompressFormat format, int quality, OutputStream stream) {
-    try {
-      stream.write((description + " compressed as " + format + " with quality " + quality).getBytes(UTF_8));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    return true;
+    appendDescription(" compressed as " + format + " with quality " + quality);
+    return ImageUtil.writeToStream(realBitmap, format, quality, stream);
   }
 
   @Implementation
@@ -438,6 +432,12 @@ public class ShadowBitmap {
     shadowBitmap.createdFromBitmap = realBitmap;
     shadowBitmap.config = config;
     shadowBitmap.mutable = isMutable;
+    shadowBitmap.height = getHeight();
+    shadowBitmap.width = getWidth();
+    if (colors != null) {
+      shadowBitmap.colors = new int[colors.length];
+      System.arraycopy(shadowBitmap.colors, 0, colors, 0, colors.length);
+    }
     return newBitmap;
   }
 
@@ -485,6 +485,16 @@ public class ShadowBitmap {
   @Implementation
   protected void setHasAlpha(boolean hasAlpha) {
     this.hasAlpha = hasAlpha;
+  }
+
+  @Implementation
+  protected Bitmap extractAlpha() {
+    int[] alphaPixels = new int[colors.length];
+    for (int i = 0; i < alphaPixels.length; i++) {
+      alphaPixels[i] = Color.alpha(colors[i]);
+    }
+
+    return createBitmap(alphaPixels, getWidth(), getHeight(), Bitmap.Config.ALPHA_8);
   }
 
   @Implementation(minSdk = JELLY_BEAN_MR1)
@@ -539,7 +549,9 @@ public class ShadowBitmap {
 
   @Implementation
   protected void eraseColor(int color) {
-    Arrays.fill(colors, color);
+    if (colors != null) {
+      Arrays.fill(colors, color);
+    }
   }
 
   @Implementation
@@ -571,7 +583,7 @@ public class ShadowBitmap {
     // See the related comment in #copyPixelsToBuffer(Buffer).
     if (getBytesPerPixel(config) != INTERNAL_BYTES_PER_PIXEL) {
       throw new RuntimeException("Not implemented: only Bitmaps with " + INTERNAL_BYTES_PER_PIXEL
-          + " bytes per pixel are supported");
+              + " bytes per pixel are supported");
     }
     if (!(dst instanceof ByteBuffer)) {
       throw new RuntimeException("Not implemented: unsupported Buffer subclass");
@@ -595,7 +607,7 @@ public class ShadowBitmap {
     // configs that value would be smaller then the buffer size we actually need.
     if (getBytesPerPixel(config) != INTERNAL_BYTES_PER_PIXEL) {
       throw new RuntimeException("Not implemented: only Bitmaps with " + INTERNAL_BYTES_PER_PIXEL
-          + " bytes per pixel are supported");
+              + " bytes per pixel are supported");
     }
 
     if (!(dst instanceof ByteBuffer)) {

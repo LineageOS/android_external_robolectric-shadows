@@ -318,7 +318,7 @@ public class ShadowMotionEvent {
       int pointerCount,
       PointerProperties[] pointerPropertiesObjArray,
       PointerCoords[] pointerCoordsObjArray) {
-    return
+        return
         nativeInitialize(
             nativePtr,
             deviceId,

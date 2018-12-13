@@ -237,22 +237,22 @@ public class ShadowLegacyAssetManager extends ShadowAssetManager {
   protected void __constructor__() {
     resourceTable = RuntimeEnvironment.getAppResourceTable();
 
-
+    
     if (RuntimeEnvironment.getApiLevel() >= P) {
       invokeConstructor(AssetManager.class, realObject);
     }
-
+    
   }
 
   @Implementation
   protected void __constructor__(boolean isSystem) {
     resourceTable = isSystem ? RuntimeEnvironment.getSystemResourceTable() : RuntimeEnvironment.getAppResourceTable();
 
-
+    
     if (RuntimeEnvironment.getApiLevel() >= P) {
       invokeConstructor(AssetManager.class, realObject, from(boolean.class, isSystem));
     }
-
+    
   }
 
   @Implementation(minSdk = P)
@@ -411,7 +411,7 @@ public class ShadowLegacyAssetManager extends ShadowAssetManager {
     File fileFromZip = null;
     String pathString = file.getPath();
     String zipFile = pathString.substring(pathString.lastIndexOf(":") + 1, pathString.indexOf("!"));
-    String filePathInsideZip = pathString.split("!")[1].substring(1);
+    String filePathInsideZip = pathString.split("!", 0)[1].substring(1);
     byte[] buffer = new byte[1024];
     try {
       File outputDir = Files.createTempDirectory("robolectric_assets").toFile();

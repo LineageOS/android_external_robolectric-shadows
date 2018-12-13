@@ -57,29 +57,31 @@ public class BuckManifestFactoryTest {
     ManifestIdentifier manifestIdentifier = buckManifestFactory.identify(configBuilder.build());
     AndroidManifest manifest = RobolectricTestRunner.createAndroidManifest(manifestIdentifier);
     assertThat(manifest.getResDirectory())
-        .isEqualTo(FileFsFile.from("buck/res2"));
+            .isEqualTo(FileFsFile.from("buck/res2"));
     assertThat(manifest.getAssetsDirectory())
-        .isEqualTo(FileFsFile.from("buck/assets2"));
+            .isEqualTo(FileFsFile.from("buck/assets2"));
 
     List<ResourcePath> resourcePathList = manifest.getIncludedResourcePaths();
     assertThat(resourcePathList.size()).isEqualTo(3);
     assertThat(resourcePathList).containsExactly(
-        new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res2"), FileFsFile.from("buck/assets2")),
-        new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res1"), null),
-        new ResourcePath(manifest.getRClass(), null, FileFsFile.from("buck/assets1"))
+      new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res2"), FileFsFile.from("buck/assets2")),
+      new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res1"), null),
+      new ResourcePath(manifest.getRClass(), null, FileFsFile.from("buck/assets1"))
     );
   }
 
   @Test public void pass_multiple_res_dirs_in_file() throws Exception {
     String resDirectoriesFileName = "res-directories";
     File resDirectoriesFile = tempFolder.newFile(resDirectoriesFileName);
-    Files.write("buck/res1\nbuck/res2", resDirectoriesFile, Charsets.UTF_8);
-    System.setProperty("buck.robolectric_res_directories", "@" + resDirectoriesFile.getAbsolutePath());
+    Files.asCharSink(resDirectoriesFile, Charsets.UTF_8).write("buck/res1\nbuck/res2");
+    System.setProperty(
+        "buck.robolectric_res_directories", "@" + resDirectoriesFile.getAbsolutePath());
 
     String assetDirectoriesFileName = "asset-directories";
     File assetDirectoriesFile = tempFolder.newFile(assetDirectoriesFileName);
-    Files.write("buck/assets1\nbuck/assets2", assetDirectoriesFile, Charsets.UTF_8);
-    System.setProperty("buck.robolectric_assets_directories", "@" + assetDirectoriesFile.getAbsolutePath());
+    Files.asCharSink(assetDirectoriesFile, Charsets.UTF_8).write("buck/assets1\nbuck/assets2");
+    System.setProperty(
+        "buck.robolectric_assets_directories", "@" + assetDirectoriesFile.getAbsolutePath());
 
     ManifestIdentifier manifestIdentifier = buckManifestFactory.identify(configBuilder.build());
     AndroidManifest manifest = RobolectricTestRunner.createAndroidManifest(manifestIdentifier);
@@ -91,9 +93,9 @@ public class BuckManifestFactoryTest {
     List<ResourcePath> resourcePathList = manifest.getIncludedResourcePaths();
     assertThat(resourcePathList.size()).isEqualTo(3);
     assertThat(resourcePathList).containsExactly(
-        new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res2"), FileFsFile.from("buck/assets2")),
-        new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res1"), null),
-        new ResourcePath(manifest.getRClass(), null, FileFsFile.from("buck/assets1"))
+            new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res2"), FileFsFile.from("buck/assets2")),
+            new ResourcePath(manifest.getRClass(), FileFsFile.from("buck/res1"), null),
+            new ResourcePath(manifest.getRClass(), null, FileFsFile.from("buck/assets1"))
     );
   }
 }

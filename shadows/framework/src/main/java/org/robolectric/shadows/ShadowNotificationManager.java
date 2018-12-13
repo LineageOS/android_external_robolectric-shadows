@@ -81,16 +81,16 @@ public class ShadowNotificationManager {
     int i = 0;
     for (Map.Entry<Key, Notification> entry : notifications.entrySet()) {
       statusBarNotifications[i++] = new StatusBarNotification(
-          RuntimeEnvironment.application.getPackageName(),
-          null /* opPkg */,
-          entry.getKey().id,
-          entry.getKey().tag,
-          android.os.Process.myUid() /* uid */,
-          android.os.Process.myPid() /* initialPid */,
-          0 /* score */,
-          entry.getValue(),
-          android.os.Process.myUserHandle(),
-          0 /* postTime */);
+	  RuntimeEnvironment.application.getPackageName(),
+	  null /* opPkg */,
+	  entry.getKey().id,
+	  entry.getKey().tag,
+	  android.os.Process.myUid() /* uid */,
+	  android.os.Process.myPid() /* initialPid */,
+	  0 /* score */,
+	  entry.getValue(),
+	  android.os.Process.myUserHandle(),
+	  0 /* postTime */);
     }
     return statusBarNotifications;
   }

@@ -23,7 +23,9 @@ public class ShadowPackageParser {
 
   @Implementation
   protected void __constructor__() {
-    realObject.setCallback(new Callback());
+    if (RuntimeEnvironment.getApiLevel() >= Build.VERSION_CODES.O) {
+      realObject.setCallback(new Callback());
+    }
   }
 
   /** Parses an AndroidManifest.xml file using the framework PackageParser. */

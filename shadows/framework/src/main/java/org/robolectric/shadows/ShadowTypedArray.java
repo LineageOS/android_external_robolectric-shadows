@@ -107,20 +107,20 @@ public class ShadowTypedArray {
   }
 
   private static final ImmutableMap<Integer, String> TYPE_MAP = ImmutableMap.<Integer, String>builder()
-      .put(TypedValue.TYPE_NULL, "TYPE_NULL")
-      .put(TypedValue.TYPE_REFERENCE, "TYPE_REFERENCE")
-      .put(TypedValue.TYPE_ATTRIBUTE, "TYPE_ATTRIBUTE")
-      .put(TypedValue.TYPE_STRING, "TYPE_STRING")
-      .put(TypedValue.TYPE_FLOAT, "TYPE_FLOAT")
-      .put(TypedValue.TYPE_DIMENSION, "TYPE_DIMENSION")
-      .put(TypedValue.TYPE_FRACTION, "TYPE_FRACTION")
-      .put(TypedValue.TYPE_INT_DEC, "TYPE_INT_DEC")
-      .put(TypedValue.TYPE_INT_HEX, "TYPE_INT_HEX")
-      .put(TypedValue.TYPE_INT_BOOLEAN, "TYPE_INT_BOOLEAN")
-      .put(TypedValue.TYPE_INT_COLOR_ARGB8, "TYPE_INT_COLOR_ARGB8")
-      .put(TypedValue.TYPE_INT_COLOR_RGB8, "TYPE_INT_COLOR_RGB8")
-      .put(TypedValue.TYPE_INT_COLOR_ARGB4, "TYPE_INT_COLOR_ARGB4")
-      .put(TypedValue.TYPE_INT_COLOR_RGB4, "TYPE_INT_COLOR_RGB4")
-      .build();
+          .put(TypedValue.TYPE_NULL, "TYPE_NULL")
+          .put(TypedValue.TYPE_REFERENCE, "TYPE_REFERENCE")
+          .put(TypedValue.TYPE_ATTRIBUTE, "TYPE_ATTRIBUTE")
+          .put(TypedValue.TYPE_STRING, "TYPE_STRING")
+          .put(TypedValue.TYPE_FLOAT, "TYPE_FLOAT")
+          .put(TypedValue.TYPE_DIMENSION, "TYPE_DIMENSION")
+          .put(TypedValue.TYPE_FRACTION, "TYPE_FRACTION")
+          .put(TypedValue.TYPE_INT_DEC, "TYPE_INT_DEC")
+          .put(TypedValue.TYPE_INT_HEX, "TYPE_INT_HEX")
+          .put(TypedValue.TYPE_INT_BOOLEAN, "TYPE_INT_BOOLEAN")
+          .put(TypedValue.TYPE_INT_COLOR_ARGB8, "TYPE_INT_COLOR_ARGB8")
+          .put(TypedValue.TYPE_INT_COLOR_RGB8, "TYPE_INT_COLOR_RGB8")
+          .put(TypedValue.TYPE_INT_COLOR_ARGB4, "TYPE_INT_COLOR_ARGB4")
+          .put(TypedValue.TYPE_INT_COLOR_RGB4, "TYPE_INT_COLOR_RGB4")
+          .build();
 
 }

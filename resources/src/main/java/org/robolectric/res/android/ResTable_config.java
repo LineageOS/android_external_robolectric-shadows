@@ -226,7 +226,7 @@ public class ResTable_config {
   public static final int LAYOUTDIR_RTL = ACONFIGURATION_LAYOUTDIR_RTL << SHIFT_LAYOUTDIR;
 
   public static final int SCREENWIDTH_ANY = 0;
-  //  public static final int MASK_SCREENSIZE = 0x0f;
+//  public static final int MASK_SCREENSIZE = 0x0f;
   public static final int SCREENSIZE_ANY = ACONFIGURATION_SCREENSIZE_ANY;
   public static final int SCREENSIZE_SMALL = ACONFIGURATION_SCREENSIZE_SMALL;
   public static final int SCREENSIZE_NORMAL = ACONFIGURATION_SCREENSIZE_NORMAL;
@@ -862,7 +862,7 @@ public class ResTable_config {
 //    screenHeightDp = dtohs(screenHeightDp);
 //  }
 
-  //  void ResTable_config::copyFromDtoH(const ResTable_config& o) {
+//  void ResTable_config::copyFromDtoH(const ResTable_config& o) {
   static ResTable_config fromDtoH(final ResTable_config o) {
     return new ResTable_config(
         0 /*sizeof(ResTable_config)*/,
@@ -1017,49 +1017,49 @@ public class ResTable_config {
   }
 
   int compare(final ResTable_config o) {
-    if (imsi() != o.imsi()) {
-      return (imsi() > o.imsi()) ? 1 : -1;
-    }
+       if (imsi() != o.imsi()) {
+       return (imsi() > o.imsi()) ? 1 : -1;
+   }
 
-    int diff = compareLocales(this, o);
-    if (diff < 0) {
-      return -1;
-    }
-    if (diff > 0) {
-      return 1;
-    }
+   int diff = compareLocales(this, o);
+   if (diff < 0) {
+       return -1;
+   }
+   if (diff > 0) {
+       return 1;
+   }
 
-    if (screenType() != o.screenType()) {
-      return (screenType() > o.screenType()) ? 1 : -1;
-    }
-    if (input() != o.input()) {
-      return (input() > o.input()) ? 1 : -1;
-    }
-    if (screenSize() != o.screenSize()) {
-      return (screenSize() > o.screenSize()) ? 1 : -1;
-    }
-    if (version() != o.version()) {
-      return (version() > o.version()) ? 1 : -1;
-    }
-    if (screenLayout != o.screenLayout) {
-      return (screenLayout > o.screenLayout) ? 1 : -1;
-    }
-    if (screenLayout2 != o.screenLayout2) {
-      return (screenLayout2 > o.screenLayout2) ? 1 : -1;
-    }
-    if (colorMode != o.colorMode) {
-      return (colorMode > o.colorMode) ? 1 : -1;
-    }
-    if (uiMode != o.uiMode) {
-      return (uiMode > o.uiMode) ? 1 : -1;
-    }
-    if (smallestScreenWidthDp != o.smallestScreenWidthDp) {
-      return (smallestScreenWidthDp > o.smallestScreenWidthDp) ? 1 : -1;
-    }
-    if (screenSizeDp() != o.screenSizeDp()) {
-      return (screenSizeDp() > o.screenSizeDp()) ? 1 : -1;
-    }
-    return 0;
+   if (screenType() != o.screenType()) {
+       return (screenType() > o.screenType()) ? 1 : -1;
+   }
+   if (input() != o.input()) {
+       return (input() > o.input()) ? 1 : -1;
+   }
+   if (screenSize() != o.screenSize()) {
+       return (screenSize() > o.screenSize()) ? 1 : -1;
+   }
+   if (version() != o.version()) {
+       return (version() > o.version()) ? 1 : -1;
+   }
+   if (screenLayout != o.screenLayout) {
+       return (screenLayout > o.screenLayout) ? 1 : -1;
+   }
+   if (screenLayout2 != o.screenLayout2) {
+       return (screenLayout2 > o.screenLayout2) ? 1 : -1;
+   }
+   if (colorMode != o.colorMode) {
+       return (colorMode > o.colorMode) ? 1 : -1;
+   }
+   if (uiMode != o.uiMode) {
+       return (uiMode > o.uiMode) ? 1 : -1;
+   }
+   if (smallestScreenWidthDp != o.smallestScreenWidthDp) {
+       return (smallestScreenWidthDp > o.smallestScreenWidthDp) ? 1 : -1;
+   }
+   if (screenSizeDp() != o.screenSizeDp()) {
+       return (screenSizeDp() > o.screenSizeDp()) ? 1 : -1;
+   }
+   return 0;
   }
 
 
@@ -1358,10 +1358,10 @@ public class ResTable_config {
       }
 
       if (isTruthy(input()) || isTruthy(o.input())) {
-        final int keysHidden = inputFlags & MASK_KEYSHIDDEN;
-        final int oKeysHidden = o.inputFlags & MASK_KEYSHIDDEN;
+            final int keysHidden = inputFlags & MASK_KEYSHIDDEN;
+            final int oKeysHidden = o.inputFlags & MASK_KEYSHIDDEN;
         if (keysHidden != oKeysHidden) {
-          final int reqKeysHidden =
+                final int reqKeysHidden =
               requested.inputFlags & MASK_KEYSHIDDEN;
           if (isTruthy(reqKeysHidden)) {
 
@@ -1375,10 +1375,10 @@ public class ResTable_config {
           }
         }
 
-        final int navHidden = inputFlags & MASK_NAVHIDDEN;
-        final int oNavHidden = o.inputFlags & MASK_NAVHIDDEN;
+            final int navHidden = inputFlags & MASK_NAVHIDDEN;
+            final int oNavHidden = o.inputFlags & MASK_NAVHIDDEN;
         if (navHidden != oNavHidden) {
-          final int reqNavHidden =
+                final int reqNavHidden =
               requested.inputFlags & MASK_NAVHIDDEN;
           if (isTruthy(reqNavHidden)) {
 
@@ -1501,34 +1501,34 @@ public class ResTable_config {
     }
 
     if (screenConfig() != 0) {
-      final int layoutDir = screenLayout&MASK_LAYOUTDIR;
-      final int setLayoutDir = settings.screenLayout&MASK_LAYOUTDIR;
+        final int layoutDir = screenLayout&MASK_LAYOUTDIR;
+        final int setLayoutDir = settings.screenLayout&MASK_LAYOUTDIR;
       if (layoutDir != 0 && layoutDir != setLayoutDir) {
         return false;
       }
 
-      final int screenSize = screenLayout&MASK_SCREENSIZE;
-      final int setScreenSize = settings.screenLayout&MASK_SCREENSIZE;
+        final int screenSize = screenLayout&MASK_SCREENSIZE;
+        final int setScreenSize = settings.screenLayout&MASK_SCREENSIZE;
       // Any screen sizes for larger screens than the setting do not
       // match.
       if (screenSize != 0 && screenSize > setScreenSize) {
         return false;
       }
 
-      final int screenLong = screenLayout&MASK_SCREENLONG;
-      final int setScreenLong = settings.screenLayout&MASK_SCREENLONG;
+        final int screenLong = screenLayout&MASK_SCREENLONG;
+        final int setScreenLong = settings.screenLayout&MASK_SCREENLONG;
       if (screenLong != 0 && screenLong != setScreenLong) {
         return false;
       }
 
-      final int uiModeType = uiMode&MASK_UI_MODE_TYPE;
-      final int setUiModeType = settings.uiMode&MASK_UI_MODE_TYPE;
+        final int uiModeType = uiMode&MASK_UI_MODE_TYPE;
+        final int setUiModeType = settings.uiMode&MASK_UI_MODE_TYPE;
       if (uiModeType != 0 && uiModeType != setUiModeType) {
         return false;
       }
 
-      final int uiModeNight = uiMode&MASK_UI_MODE_NIGHT;
-      final int setUiModeNight = settings.uiMode&MASK_UI_MODE_NIGHT;
+        final int uiModeNight = uiMode&MASK_UI_MODE_NIGHT;
+        final int setUiModeNight = settings.uiMode&MASK_UI_MODE_NIGHT;
       if (uiModeNight != 0 && uiModeNight != setUiModeNight) {
         return false;
       }
@@ -1540,8 +1540,8 @@ public class ResTable_config {
     }
 
     if (screenConfig2() != 0) {
-      final int screenRound = screenLayout2 & MASK_SCREENROUND;
-      final int setScreenRound = settings.screenLayout2 & MASK_SCREENROUND;
+        final int screenRound = screenLayout2 & MASK_SCREENROUND;
+        final int setScreenRound = settings.screenLayout2 & MASK_SCREENROUND;
       if (screenRound != 0 && screenRound != setScreenRound) {
         return false;
       }
@@ -1585,8 +1585,8 @@ public class ResTable_config {
       }
     }
     if (input() != 0) {
-      final int keysHidden = inputFlags&MASK_KEYSHIDDEN;
-      final int setKeysHidden = settings.inputFlags&MASK_KEYSHIDDEN;
+        final int keysHidden = inputFlags&MASK_KEYSHIDDEN;
+        final int setKeysHidden = settings.inputFlags&MASK_KEYSHIDDEN;
       if (keysHidden != 0 && keysHidden != setKeysHidden) {
         // For compatibility, we count a request for KEYSHIDDEN_NO as also
         // matching the more recent KEYSHIDDEN_SOFT.  Basically
@@ -1601,8 +1601,8 @@ public class ResTable_config {
           return false;
         }
       }
-      final int navHidden = inputFlags&MASK_NAVHIDDEN;
-      final int setNavHidden = settings.inputFlags&MASK_NAVHIDDEN;
+        final int navHidden = inputFlags&MASK_NAVHIDDEN;
+        final int setNavHidden = settings.inputFlags&MASK_NAVHIDDEN;
       if (navHidden != 0 && navHidden != setNavHidden) {
         return false;
       }
@@ -1706,6 +1706,8 @@ public class ResTable_config {
         // Replace Tagalog with Filipino if we are canonicalizing
         str.setLength(0);
         str.append("fil");// 3-letter code for Filipino
+      } else {
+        str.append(unpackLanguage());
       }
     }
 
@@ -1740,7 +1742,7 @@ public class ResTable_config {
     if (localeNumberingSystem[0] != '\0' && str.length() > 0) {
       String NU_PREFIX = "-u-nu-";
       str.append(NU_PREFIX);
-      str.append(new String(localeNumberingSystem));
+      str.append(new String(localeNumberingSystem, UTF_8));
     }
 
     return str.toString();
@@ -1996,14 +1998,14 @@ public class ResTable_config {
   }
 
   /**
-   union {
-   struct {
-   uint8_t orientation;
-   uint8_t touchscreen;
-   uint16_t density;
-   };
-   uint32_t screenType;
-   };
+     union {
+     struct {
+     uint8_t orientation;
+     uint8_t touchscreen;
+     uint16_t density;
+     };
+     uint32_t screenType;
+     };
    */
   private int screenType() {
     return ((orientation & 0xff) << 24) | ((touchscreen & 0xff) << 16) | (density & 0xffff);
@@ -2171,14 +2173,14 @@ public class ResTable_config {
 
     // The variants are the same, try numbering system.
     boolean localeNumsysMatches = arrayCompare(localeNumberingSystem,
-        requested.localeNumberingSystem
-    ) == 0;
+                                             requested.localeNumberingSystem
+                                             ) == 0;
     boolean otherNumsysMatches = arrayCompare(o.localeNumberingSystem,
-        requested.localeNumberingSystem
-    ) == 0;
+                                            requested.localeNumberingSystem
+                                            ) == 0;
 
     if (localeNumsysMatches != otherNumsysMatches) {
-      return localeNumsysMatches;
+        return localeNumsysMatches;
     }
 
     // Finally, the languages, although equivalent, may still be different

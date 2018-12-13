@@ -189,12 +189,12 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
       throws IOException {
     throw new UnsupportedOperationException();
     // return getFromCacheOrLoad(
-    // new Key(fd, friendlyName, system, forceSharedLibrary, false),
-    // () -> directlyOn(ApkAssets.class, "loadFromPath",
-    //     ClassParameter.from(FileDescriptor.class, fd),
-    //     ClassParameter.from(String.class, friendlyName),
-    //     ClassParameter.from(boolean.class, system),
-    //     ClassParameter.from(boolean.class, forceSharedLibrary)));
+        // new Key(fd, friendlyName, system, forceSharedLibrary, false),
+        // () -> directlyOn(ApkAssets.class, "loadFromPath",
+        //     ClassParameter.from(FileDescriptor.class, fd),
+        //     ClassParameter.from(String.class, friendlyName),
+        //     ClassParameter.from(boolean.class, system),
+        //     ClassParameter.from(boolean.class, forceSharedLibrary)));
   }
 
   // static jlong NativeLoad(JNIEnv* env, jclass /*clazz*/, jstring java_path, jboolean system,

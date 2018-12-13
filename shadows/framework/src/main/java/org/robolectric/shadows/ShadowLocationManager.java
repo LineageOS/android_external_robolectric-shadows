@@ -55,7 +55,7 @@ public class ShadowLocationManager {
     long lastSeenTime;
 
     ListenerRegistration(String provider, long minTime, float minDistance, Location locationAtCreation,
-        LocationListener listener) {
+               LocationListener listener) {
       this.provider = provider;
       this.minTime = minTime;
       this.minDistance = minDistance;

@@ -23,7 +23,7 @@ public class ShadowStaticLayout {
   @HiddenApi
   @Implementation(minSdk = M, maxSdk = O_MR1)
   public static int nComputeLineBreaks(Object nativePtr, Object recycle,
-      Object recycleBreaks, Object recycleWidths, Object recycleFlags, Object recycleLength) {
+            Object recycleBreaks, Object recycleWidths, Object recycleFlags, Object recycleLength) {
     return 1;
   }
 

@@ -57,15 +57,15 @@ public class ShadowAccessibilityNodeInfo {
   public static final Parcelable.Creator<AccessibilityNodeInfo> CREATOR =
       new Parcelable.Creator<AccessibilityNodeInfo>() {
 
-        @Override
-        public AccessibilityNodeInfo createFromParcel(Parcel source) {
-          return obtain(orderedInstances.get(source.readInt()).mInfo);
-        }
+    @Override
+    public AccessibilityNodeInfo createFromParcel(Parcel source) {
+      return obtain(orderedInstances.get(source.readInt()).mInfo);
+    }
 
-        @Override
-        public AccessibilityNodeInfo[] newArray(int size) {
-          return new AccessibilityNodeInfo[size];
-        }};
+    @Override
+    public AccessibilityNodeInfo[] newArray(int size) {
+      return new AccessibilityNodeInfo[size];
+    }};
 
   private static int sAllocationCount = 0;
 
@@ -169,7 +169,7 @@ public class ShadowAccessibilityNodeInfo {
   private int maxTextLength; //21
 
   private CharSequence error; //21
-
+  
   private AccessibilityWindowInfo accessibilityWindowInfo;
 
   private AccessibilityNodeInfo traversalAfter; //22
@@ -351,7 +351,7 @@ public class ShadowAccessibilityNodeInfo {
 
   @Implementation(minSdk = JELLY_BEAN_MR2)
   protected boolean refresh() {
-    return refreshReturnValue;
+      return refreshReturnValue;
   }
 
   public void setRefreshReturnValue(boolean refreshReturnValue) {
@@ -589,8 +589,8 @@ public class ShadowAccessibilityNodeInfo {
 
   @Implementation(minSdk = JELLY_BEAN_MR2)
   protected void setTextSelection(int start, int end) {
-    textSelectionStart = start;
-    textSelectionEnd = end;
+      textSelectionStart = start;
+      textSelectionEnd = end;
   }
 
   /**
@@ -600,7 +600,7 @@ public class ShadowAccessibilityNodeInfo {
    */
   @Implementation(minSdk = JELLY_BEAN_MR2)
   protected int getTextSelectionStart() {
-    return textSelectionStart;
+      return textSelectionStart;
   }
 
   /**
@@ -610,7 +610,7 @@ public class ShadowAccessibilityNodeInfo {
    */
   @Implementation(minSdk = JELLY_BEAN_MR2)
   protected int getTextSelectionEnd() {
-    return textSelectionEnd;
+      return textSelectionEnd;
   }
 
   @Implementation(minSdk = JELLY_BEAN_MR2)
@@ -761,7 +761,7 @@ public class ShadowAccessibilityNodeInfo {
     if (this.traversalAfter != null) {
       this.traversalAfter.recycle();
     }
-
+    
     this.traversalAfter = obtain(view);
   }
 
@@ -813,7 +813,7 @@ public class ShadowAccessibilityNodeInfo {
     if (this.traversalBefore != null) {
       this.traversalBefore.recycle();
     }
-
+    
     this.traversalBefore = obtain(info);
   }
 
@@ -1258,13 +1258,13 @@ public class ShadowAccessibilityNodeInfo {
     // Get the mask to determine whether an int is a legit ID for an action, defined by Android
     return (int)ReflectionHelpers.getStaticField(AccessibilityNodeInfo.class, "ACTION_TYPE_MASK");
   }
-
+  
   private static AccessibilityAction getActionFromIdFromFrameWork(int id) {
     // Convert an action ID to Android standard Accessibility Action defined by Android
     return ReflectionHelpers.callStaticMethod(
         AccessibilityNodeInfo.class, "getActionSingleton", ClassParameter.from(int.class, id));
   }
-
+  
   private static int getLastLegacyActionFromFrameWork() {
     return (int)ReflectionHelpers.getStaticField(AccessibilityNodeInfo.class, "LAST_LEGACY_STANDARD_ACTION");
   }

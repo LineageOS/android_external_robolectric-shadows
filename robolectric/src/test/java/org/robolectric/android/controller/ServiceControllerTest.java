@@ -112,14 +112,14 @@ public class ServiceControllerTest {
     private Handler handler = new Handler(Looper.getMainLooper());
 
     public Intent boundIntent;
-
+    
     public Intent reboundIntent;
     public Intent startIntent;
     public int startFlags;
     public int startId;
-
+    
     public Intent unboundIntent;
-
+    
     @Override
     public IBinder onBind(Intent intent) {
       boundIntent = intent;
