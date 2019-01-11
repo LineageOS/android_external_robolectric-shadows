@@ -4,6 +4,7 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.M;
+import static android.os.Build.VERSION_CODES.P;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -132,7 +133,8 @@ public class ShadowSettings {
     @Implementation
     protected static boolean putInt(ContentResolver resolver, String name, int value) {
       if (Settings.Secure.LOCATION_MODE.equals(name)
-          && RuntimeEnvironment.getApiLevel() >= LOLLIPOP) {
+          && RuntimeEnvironment.getApiLevel() >= LOLLIPOP
+          && RuntimeEnvironment.getApiLevel() <= P) {
         // Map LOCATION_MODE to underlying location provider storage API
         return Shadow.directlyOn(
             Settings.Secure.class,
@@ -152,7 +154,8 @@ public class ShadowSettings {
     @Implementation
     protected static int getInt(ContentResolver resolver, String name) {
       if (Settings.Secure.LOCATION_MODE.equals(name)
-          && RuntimeEnvironment.getApiLevel() >= LOLLIPOP) {
+          && RuntimeEnvironment.getApiLevel() >= LOLLIPOP
+          && RuntimeEnvironment.getApiLevel() <= P) {
         // Map from to underlying location provider storage API to location mode
         return Shadow.directlyOn(
             Settings.Secure.class,
@@ -171,7 +174,8 @@ public class ShadowSettings {
     @Implementation
     protected static int getInt(ContentResolver resolver, String name, int def) {
       if (Settings.Secure.LOCATION_MODE.equals(name)
-          && RuntimeEnvironment.getApiLevel() >= LOLLIPOP) {
+          && RuntimeEnvironment.getApiLevel() >= LOLLIPOP
+          && RuntimeEnvironment.getApiLevel() <= P) {
         // Map from to underlying location provider storage API to location mode
         return Shadow.directlyOn(
             Settings.Secure.class,
