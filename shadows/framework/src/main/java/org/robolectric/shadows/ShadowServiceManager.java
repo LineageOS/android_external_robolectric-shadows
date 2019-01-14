@@ -16,6 +16,7 @@ import android.app.INotificationManager;
 import android.app.ISearchManager;
 import android.app.admin.IDevicePolicyManager;
 import android.app.job.IJobScheduler;
+import android.app.role.IRoleManager;
 import android.app.slice.ISliceManager;
 import android.app.trust.ITrustManager;
 import android.app.usage.IUsageStatsManager;
@@ -191,6 +192,8 @@ public class ShadowServiceManager {
           createBinder(INotificationManager.class, "android.app.INotificationManager"));
       map.put(Context.COLOR_DISPLAY_SERVICE, createBinder(IColorDisplayManager.class,
           "android.hardware.display.ColorDisplayManager"));
+      map.put(Context.ROLE_SERVICE,
+              createBinder(IRoleManager.class, "android.app.role.IRoleManager"));
     }
     // END-INTERNAL
     SERVICES = Collections.unmodifiableMap(map);
