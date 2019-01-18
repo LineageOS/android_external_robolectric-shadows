@@ -105,6 +105,14 @@ public class ShadowLegacyAssetManager extends ShadowAssetManager {
 
   static boolean strictErrors = false;
 
+  private static final int STYLE_NUM_ENTRIES = 6;
+  private static final int STYLE_TYPE = 0;
+  private static final int STYLE_DATA = 1;
+  private static final int STYLE_ASSET_COOKIE = 2;
+  private static final int STYLE_RESOURCE_ID = 3;
+  private static final int STYLE_CHANGING_CONFIGURATIONS = 4;
+  private static final int STYLE_DENSITY = 5;
+
   private static long nextInternalThemeId = 1000;
   private static final Map<Long, NativeTheme> nativeThemes = new HashMap<>();
 

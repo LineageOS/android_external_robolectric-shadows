@@ -12,19 +12,17 @@ import org.robolectric.res.android.String8;
 import org.robolectric.shadow.api.Shadow;
 
 abstract public class ShadowAssetManager {
-  static final int STYLE_NUM_ENTRIES = 6;
-  static final int STYLE_TYPE = 0;
-  static final int STYLE_DATA = 1;
-  static final int STYLE_ASSET_COOKIE = 2;
-  static final int STYLE_RESOURCE_ID = 3;
-  static final int STYLE_CHANGING_CONFIGURATIONS = 4;
-  static final int STYLE_DENSITY = 5;
 
   public static class Picker extends ResourceModeShadowPicker<ShadowAssetManager> {
 
     public Picker() {
-      super(ShadowLegacyAssetManager.class, ShadowArscAssetManager.class,
-          ShadowArscAssetManager9.class);
+      super(ShadowLegacyAssetManager.class,
+              ShadowArscAssetManager.class,
+              ShadowArscAssetManager9.class
+              // BEGIN-INTERNAL
+              ,ShadowArscAssetManager10.class
+              // END-INTERNAL
+      );
     }
   }
 
