@@ -28,10 +28,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.UserManager;
+import android.util.ArraySet;
+
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -999,11 +1002,13 @@ public final class ShadowDevicePolicyManagerTest {
   // BEGIN-INTERNAL
   @Test
   @Config(minSdk = Q)
-  public void addAndGetCrossProfileCalendarPackages() {
+  public void setAndGetCrossProfileCalendarPackages() {
       final String testPackageName = "testPackage";
       shadowOf(devicePolicyManager).setProfileOwner(testComponent);
-      devicePolicyManager.addCrossProfileCalendarPackage(testComponent, testPackageName);
-      Set<String> packages = devicePolicyManager.getCrossProfileCalendarPackages(testComponent);
+      devicePolicyManager.setCrossProfileCalendarPackages(testComponent,
+              Collections.singleton(testPackageName));
+      final Set<String> packages = devicePolicyManager.getCrossProfileCalendarPackages(
+              testComponent);
       assertThat(packages.size()).isEqualTo(1);
       assertThat(packages.toArray()[0]).isEqualTo(testPackageName);
   }
