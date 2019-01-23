@@ -281,7 +281,7 @@ public class ShadowImageDecoder {
     return ImageDecoder_nCreateFd(fd, src);
   }
 
-  @Implementation
+  @Implementation(maxSdk = Build.VERSION_CODES.P)
   protected static Bitmap nDecodeBitmap(long nativePtr,
       ImageDecoder decoder,
       boolean doPostProcess,
@@ -300,6 +300,28 @@ public class ShadowImageDecoder {
         conserveMemory, decodeAsAlphaMask,
         desiredColorSpace);
   }
+
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = Build.VERSION_CODES.Q)
+  protected static Bitmap nDecodeBitmap(long nativePtr,
+      ImageDecoder decoder,
+      boolean doPostProcess,
+      int width, int height,
+      android.graphics.Rect cropRect, boolean mutable,
+      int allocator, boolean unpremulRequired,
+      boolean conserveMemory, boolean decodeAsAlphaMask,
+      long colorSpacePtr)
+      throws IOException {
+    return ImageDecoder_nDecodeBitmap(nativePtr,
+        decoder,
+        doPostProcess,
+        width, height,
+        cropRect, mutable,
+        allocator, unpremulRequired,
+        conserveMemory, decodeAsAlphaMask,
+        null);
+  }
+  // END-INTERNAL
 
   @Implementation
   protected static Size nGetSampledSize(long nativePtr,
