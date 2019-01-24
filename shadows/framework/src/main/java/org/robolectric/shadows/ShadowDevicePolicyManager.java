@@ -91,8 +91,8 @@ public class ShadowDevicePolicyManager {
   private final Map<PackageAndPermission, Integer> appPermissionGrantStateMap = new HashMap<>();
   private final Map<ComponentName, byte[]> passwordResetTokens = new HashMap<>();
   private final Set<ComponentName> componentsWithActivatedTokens = new HashSet<>();
-  private final Set<String> crossProfileCalendarPackages = new HashSet<>();
   private Collection<String> packagesToFailForSetApplicationHidden = Collections.emptySet();
+  private Set<String> crossProfileCalendarPackages = Collections.emptySet();
   private Context context;
   private ApplicationPackageManager applicationPackageManager;
 
@@ -865,9 +865,9 @@ public class ShadowDevicePolicyManager {
   }
 
   @Implementation(minSdk = Q)
-  public void addCrossProfileCalendarPackage(ComponentName admin, String packageName) {
+  public void setCrossProfileCalendarPackages(ComponentName admin, Set<String> packageNames) {
     enforceProfileOwner(admin);
-    crossProfileCalendarPackages.add(packageName);
+    crossProfileCalendarPackages = packageNames;
   }
   // END-INTERNAL
 }
