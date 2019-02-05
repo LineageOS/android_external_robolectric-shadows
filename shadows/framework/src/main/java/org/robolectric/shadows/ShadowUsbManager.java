@@ -1,12 +1,13 @@
 package org.robolectric.shadows;
 
-import static android.os.Build.VERSION_CODES.Q;
 import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.N_MR1;
+import static android.os.Build.VERSION_CODES.P;
 import static org.robolectric.RuntimeEnvironment.application;
 import static org.robolectric.util.ReflectionHelpers.ClassParameter.from;
 import static org.robolectric.util.ReflectionHelpers.callConstructor;
+import static org.robolectric.util.ReflectionHelpers.getStaticField;
 
 import android.content.Intent;
 import android.hardware.usb.UsbAccessory;
@@ -14,6 +15,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbPort;
 import android.hardware.usb.UsbPortStatus;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import com.google.common.base.Preconditions;
 import java.io.File;
@@ -30,9 +32,11 @@ import org.robolectric.annotation.RealObject;
 /** Robolectric implementation of {@link android.hardware.usb.UsbManager}. */
 @Implements(value = UsbManager.class, looseSignatures = true)
 public class ShadowUsbManager {
-  @RealObject private UsbManager realUsbManager;
 
-    /**
+  @RealObject
+  private UsbManager realUsbManager;
+
+  /**
    * A mapping from the package names to a list of USB devices for which permissions are granted.
    */
   private final HashMap<String, List<UsbDevice>> grantedPermissions = new HashMap<>();
@@ -139,12 +143,14 @@ public class ShadowUsbManager {
 
   @Implementation(minSdk = M)
   @HiddenApi
-  protected /* UsbPort[] / List<UsbPort> */ Object getPorts() {
-    if (RuntimeEnvironment.getApiLevel() >= Q) {
+  protected /* UsbPort[] */ Object getPorts() {
+// BEGIN-INTERNAL
+    if (RuntimeEnvironment.getApiLevel() >= Build.VERSION_CODES.Q) {
       return new ArrayList<>(usbPorts.keySet());
-    } else {
-      return usbPorts.keySet().toArray(new UsbPort[usbPorts.size()]);
     }
+
+// END-INTERNAL
+    return usbPorts.keySet().toArray(new UsbPort[usbPorts.size()]);
   }
 
   /** Remove all added ports from UsbManager. */
@@ -154,26 +160,28 @@ public class ShadowUsbManager {
 
   /** Adds a USB port to UsbManager. */
   public void addPort(String portId) {
-    UsbPort usbPort;
-
-    if (RuntimeEnvironment.getApiLevel() >= Q) {
-      usbPort = new UsbPort(realUsbManager, portId, UsbPortStatus.MODE_DUAL,
-          UsbPortStatus.CONTAMINANT_PROTECTION_NONE, false, false);
+// BEGIN-INTERNAL
+    if (RuntimeEnvironment.getApiLevel() >= Build.VERSION_CODES.Q) {
       usbPorts.put(
-          usbPort,
-          new UsbPortStatus(UsbPortStatus.MODE_DUAL, UsbPortStatus.POWER_ROLE_SINK,
-          UsbPortStatus.DATA_ROLE_DEVICE, 0, UsbPortStatus.CONTAMINANT_PROTECTION_NONE,
-          UsbPortStatus.CONTAMINANT_DETECTION_NOT_SUPPORTED));
-    } else {
-      usbPort = callConstructor(UsbPort.class, from(String.class, portId),
-          from(Integer.TYPE, UsbPortStatus.MODE_DUAL));
-      usbPorts.put(usbPort,
-          callConstructor(UsbPortStatus.class,
-          from(Integer.TYPE, UsbPortStatus.MODE_DUAL),
-          from(Integer.TYPE, UsbPortStatus.POWER_ROLE_SINK),
-          from(Integer.TYPE, UsbPortStatus.DATA_ROLE_DEVICE),
-          from(Integer.TYPE, 0)));
+          (UsbPort) createUsbPort(realUsbManager, portId, UsbPortStatus.MODE_DUAL),
+          (UsbPortStatus) createUsbPortStatus(
+              UsbPortStatus.MODE_DUAL,
+              UsbPortStatus.POWER_ROLE_SINK,
+              UsbPortStatus.DATA_ROLE_DEVICE,
+              0));
+      return;
     }
+
+// END-INTERNAL
+    usbPorts.put(
+        callConstructor(UsbPort.class,
+            from(String.class, portId),
+            from(int.class, getStaticField(UsbPort.class, "MODE_DUAL"))),
+        (UsbPortStatus) createUsbPortStatus(
+            getStaticField(UsbPort.class, "MODE_DUAL"),
+            getStaticField(UsbPort.class, "POWER_ROLE_SINK"),
+            getStaticField(UsbPort.class, "DATA_ROLE_DEVICE"),
+            0));
   }
 
   @Implementation(minSdk = M)
@@ -187,25 +195,13 @@ public class ShadowUsbManager {
   protected void setPortRoles(
       /* UsbPort */ Object port, /* int */ Object powerRole, /* int */ Object dataRole) {
     UsbPortStatus status = usbPorts.get(port);
-    if (RuntimeEnvironment.getApiLevel() >= Q) {
-      usbPorts.put(
-          (UsbPort) port,
-          new UsbPortStatus(
-              status.getCurrentMode(),
-              (int) powerRole,
-              (int) dataRole,
-              status.getSupportedRoleCombinations(),
-              UsbPortStatus.CONTAMINANT_PROTECTION_NONE,
-              UsbPortStatus.CONTAMINANT_DETECTION_NOT_SUPPORTED));
-    } else {
-      usbPorts.put(
-          (UsbPort) port,
-          callConstructor(UsbPortStatus.class,
-              from(Integer.TYPE, status.getCurrentMode()),
-              from(Integer.TYPE, (int) powerRole),
-              from(Integer.TYPE, (int) dataRole),
-              from(Integer.TYPE, status.getSupportedRoleCombinations())));
-    }
+    usbPorts.put(
+        (UsbPort) port,
+        (UsbPortStatus) createUsbPortStatus(
+            status.getCurrentMode(),
+            (int) powerRole,
+            (int) dataRole,
+            status.getSupportedRoleCombinations()));
     application.sendBroadcast(new Intent(UsbManager.ACTION_USB_PORT_CHANGED));
   }
 
@@ -221,4 +217,61 @@ public class ShadowUsbManager {
       throw new RuntimeException("Error shadowing openAccessory", error);
     }
   }
+
+  /**
+   * Helper method for creating a {@link UsbPortStatus}.
+   *
+   * Returns Object to avoid referencing the API M+ UsbPortStatus when running on older platforms.
+   */
+  private static Object createUsbPortStatus(
+      int currentMode,
+      int currentPowerRole,
+      int currentDataRole,
+      int supportedRoleCombinations) {
+    if (RuntimeEnvironment.getApiLevel() <= P) {
+      return callConstructor(UsbPortStatus.class,
+          from(int.class, currentMode),
+          from(int.class, currentPowerRole),
+          from(int.class, currentDataRole),
+          from(int.class, supportedRoleCombinations));
+    }
+    // BEGIN-INTERNAL
+    return new UsbPortStatus(
+        currentMode,
+     currentPowerRole,
+     currentDataRole,
+     supportedRoleCombinations,
+        0,
+        0
+    );
+    // END-INTERNAL
+  }
+
+  /**
+   * Helper method for creating a {@link UsbPort}.
+   *
+   * Returns Object to avoid referencing the API M+ UsbPort when running on older platforms.
+   */
+  private static Object createUsbPort(
+      UsbManager usbManager,
+      String id,
+      int supportedModes) {
+    if (RuntimeEnvironment.getApiLevel() <= P) {
+      return callConstructor(UsbPort.class,
+          from(UsbManager.class, usbManager),
+          from(String.class, id),
+          from(int.class, supportedModes));
+    }
+    // BEGIN-INTERNAL
+    return new UsbPort(
+        usbManager,
+        id,
+        supportedModes,
+        0,
+        false,
+        false
+    );
+    // END-INTERNAL
+  }
+
 }

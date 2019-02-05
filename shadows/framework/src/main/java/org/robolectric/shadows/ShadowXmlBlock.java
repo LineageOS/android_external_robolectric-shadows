@@ -1,7 +1,9 @@
 package org.robolectric.shadows;
 
+import static android.os.Build.VERSION_CODES.P;
 import static org.robolectric.res.android.Errors.NO_ERROR;
 
+import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
@@ -63,7 +65,7 @@ public class ShadowXmlBlock {
     return (int)nativeCreateParseState((long)obj);
   }
 
-  @Implementation(minSdk = VERSION_CODES.LOLLIPOP)
+  @Implementation(minSdk = VERSION_CODES.LOLLIPOP, maxSdk = P)
   protected static long nativeCreateParseState(long obj) {
     ResXMLTree osb = Registries.NATIVE_RES_XML_TREES.getNativeObject(obj);
 //    if (osb == NULL) {
@@ -81,6 +83,27 @@ public class ShadowXmlBlock {
 
     return Registries.NATIVE_RES_XML_PARSERS.register(st);
   }
+
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = Build.VERSION_CODES.Q)
+  protected static long nativeCreateParseState(long obj, int resid) {
+    ResXMLTree osb = Registries.NATIVE_RES_XML_TREES.getNativeObject(obj);
+//    if (osb == NULL) {
+//      jniThrowNullPointerException(env, NULL);
+//      return 0;
+//    }
+
+    ResXMLParser st = new ResXMLParser(osb);
+//    if (st == NULL) {
+//      jniThrowException(env, "java/lang/OutOfMemoryError", NULL);
+//      return 0;
+//    }
+
+    st.restart();
+
+    return Registries.NATIVE_RES_XML_PARSERS.register(st);
+  }
+  // END-INTERNAL
 
   @Implementation(maxSdk = VERSION_CODES.KITKAT_WATCH)
   protected static int nativeNext(int state) throws XmlPullParserException {
