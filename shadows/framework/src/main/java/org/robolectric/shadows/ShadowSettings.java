@@ -31,6 +31,11 @@ public class ShadowSettings {
   public static class ShadowSystem {
     private static final Map<ContentResolver, Map<String, String>> dataMap = new WeakHashMap<>();
 
+    @Resetter
+    public static void reset() {
+      dataMap.clear();
+    }
+
     @Implementation(minSdk = JELLY_BEAN_MR1)
     protected static boolean putStringForUser(ContentResolver cr, String name, String value,
         int userHandle) {
@@ -66,6 +71,11 @@ public class ShadowSettings {
   @Implements(value = Settings.Secure.class)
   public static class ShadowSecure {
     private static final Map<ContentResolver, Map<String, String>> dataMap = new WeakHashMap<>();
+
+    @Resetter
+    public static void reset() {
+      dataMap.clear();
+    }
 
     @Implementation(minSdk = JELLY_BEAN_MR1)
     protected static boolean putStringForUser(ContentResolver cr, String name, String value,
@@ -197,6 +207,11 @@ public class ShadowSettings {
   public static class ShadowGlobal {
     private static final Map<ContentResolver, Map<String, String>> dataMap = new WeakHashMap<>();
 
+    @Resetter
+    public static void reset() {
+      dataMap.clear();
+    }
+
     @Implementation(minSdk = JELLY_BEAN_MR1)
     protected static boolean putStringForUser(ContentResolver cr, String name, String value,
         int userHandle) {
@@ -228,6 +243,38 @@ public class ShadowSettings {
       return map;
     }
   }
+
+  // BEGIN-INTERNAL
+  @Implements(value = Settings.Config.class, minSdk = Build.VERSION_CODES.Q)
+  public static class ShadowConfig {
+    private static final Map<ContentResolver, Map<String, String>> dataMap = new WeakHashMap<>();
+
+    @Resetter
+    public static void reset() {
+      dataMap.clear();
+    }
+
+    @Implementation
+    protected static boolean putString(ContentResolver cr, String name, String value) {
+      get(cr).put(name, value);
+      return true;
+    }
+
+    @Implementation
+    protected static String getString(ContentResolver cr, String name) {
+      return get(cr).get(name);
+    }
+
+    private static Map<String, String> get(ContentResolver cr) {
+      Map<String, String> map = dataMap.get(cr);
+      if (map == null) {
+        map = new HashMap<>();
+        dataMap.put(cr, map);
+      }
+      return map;
+    }
+  }
+  // END-INTERNAL
 
   /**
    * Sets the value of the {@link Settings.System#AIRPLANE_MODE_ON} setting.
