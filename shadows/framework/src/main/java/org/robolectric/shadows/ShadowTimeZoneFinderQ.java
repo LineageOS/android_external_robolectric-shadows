@@ -1,39 +1,30 @@
+// BEGIN-INTERNAL
 package org.robolectric.shadows;
 
-import static android.os.Build.VERSION_CODES.O;
-import static android.os.Build.VERSION_CODES.P;
+import static android.os.Build.VERSION_CODES.Q;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import libcore.timezone.TimeZoneFinder;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
-import org.robolectric.util.ReflectionHelpers;
-import org.robolectric.util.ReflectionHelpers.ClassParameter;
 
-/** Shadow of TimeZoneFinder for Android O and P. */
+/** Shadow for TimeZoneFinder on Q or above. */
 @Implements(
-    className = "libcore.util.TimeZoneFinder",
-    minSdk = O,
-    maxSdk = P,
+    value = TimeZoneFinder.class,
+    minSdk = Q,
     isInAndroidSdk = false,
     looseSignatures = true)
-public class ShadowTimeZoneFinder {
+public class ShadowTimeZoneFinderQ {
 
   private static final String TZLOOKUP_PATH = "/usr/share/zoneinfo/tzlookup.xml";
 
   @Implementation
   protected static Object getInstance() {
-    try {
-      return ReflectionHelpers.callStaticMethod(
-          Class.forName("libcore.util.TimeZoneFinder"),
-          "createInstanceForTests",
-          ClassParameter.from(String.class, readTzlookup()));
-    } catch (ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
+    return TimeZoneFinder.createInstanceForTests(readTzlookup());
   }
 
   /**
@@ -63,3 +54,4 @@ public class ShadowTimeZoneFinder {
     return stringBuilder.toString();
   }
 }
+// END-INTERNAL
