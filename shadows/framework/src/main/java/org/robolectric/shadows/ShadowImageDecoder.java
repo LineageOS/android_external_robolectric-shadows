@@ -310,7 +310,7 @@ public class ShadowImageDecoder {
       android.graphics.Rect cropRect, boolean mutable,
       int allocator, boolean unpremulRequired,
       boolean conserveMemory, boolean decodeAsAlphaMask,
-      long colorSpacePtr)
+      long colorSpacePtr, boolean extended)
       throws IOException {
     return ImageDecoder_nDecodeBitmap(nativePtr,
         decoder,
