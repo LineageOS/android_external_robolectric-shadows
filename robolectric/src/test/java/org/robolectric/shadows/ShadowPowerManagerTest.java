@@ -153,7 +153,7 @@ public class ShadowPowerManagerTest {
     assertThat(powerManager.isPowerSaveMode()).isFalse();
 
     try {
-      powerManager.setPowerSaveMode(true);
+      powerManager.setPowerSaveModeEnabled(true);
       fail("Expected SecurityException");
     } catch (SecurityException ignored) {}
 
@@ -169,7 +169,7 @@ public class ShadowPowerManagerTest {
         .getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
     packageInfo.requestedPermissions = new String[] { permission.DEVICE_POWER };
 
-    powerManager.setPowerSaveMode(true);
+    powerManager.setPowerSaveModeEnabled(true);
     assertThat(powerManager.isPowerSaveMode()).isTrue();
   }
 
