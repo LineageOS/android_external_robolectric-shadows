@@ -127,19 +127,24 @@ public class ShadowBackupManager {
     @Override
     public int restoreAll(long token, IRestoreObserver observer, IBackupManagerMonitor monitor)
         throws RemoteException {
-      return restoreSome(token, observer, monitor, null);
+      return restorePackages(token, observer, null, monitor);
     }
 
     // Override method for SDK < 26
     public int restoreSome(long token, IRestoreObserver observer, String[] packages)
         throws RemoteException {
-      return restoreSome(token, observer, null, packages);
+      return restorePackages(token, observer, packages, null);
+    }
+
+    // Override method for SDK < 29
+    public int restoreSome(long token, IRestoreObserver observer, IBackupManagerMonitor monitor,
+          String[] packages) throws RemoteException {
+      return restorePackages(token, observer, packages, monitor);
     }
 
     @Override
-    public int restoreSome(
-        long token, IRestoreObserver observer, IBackupManagerMonitor monitor, String[] packages)
-        throws RemoteException {
+    public int restorePackages(long token, IRestoreObserver observer, String[] packages,
+          IBackupManagerMonitor monitor) throws RemoteException {
       List<String> restorePackages = new ArrayList<>(serviceState.restoreData.get(token));
       if (packages != null) {
         restorePackages.retainAll(Arrays.asList(packages));
