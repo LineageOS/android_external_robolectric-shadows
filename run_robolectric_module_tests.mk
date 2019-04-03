@@ -30,7 +30,7 @@ ifdef test_resources_directory
 endif
 
 # Define rules that copy android-all jars to the intermediates folder.
-p_android_all_source_jar := $(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub, , COMMON)/classes-with-res.jar
+p_android_all_source_jar := $(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub, , COMMON)/classes.jar
 android_all_source_dir := prebuilts/misc/common/robolectric/android-all
 android_all_target_dir := $(intermediates)/android-all
 copy_android_all_jar_pairs := \
