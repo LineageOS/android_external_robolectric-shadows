@@ -132,7 +132,7 @@ include external/robolectric-shadows/run_robolectric_module_tests.mk
 # HACK: specify these *TARGET* jars needed to compile robolectric as though they are prebuilt *HOST* java libraries
 ###########################################
 robolectric_target_to_host_jars := \
-  robolectric-host-android_all:$(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub,,COMMON)/classes-with-res.jar \
+  robolectric-host-android_all:$(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub,,COMMON)/classes.jar \
   robolectric-host-androidx-test-core:$(call java-lib-files, androidx.test.core) \
   robolectric-host-androidx-test-ext-junit:$(call java-lib-files, androidx.test.ext.junit) \
   robolectric-host-androidx-test-monitor:$(call java-lib-files, androidx.test.monitor) \
