@@ -73,10 +73,12 @@ public class ShadowPackageParser {
       return false;
     }
 
+    @Override
     public String[] getOverlayPaths(String targetPackageName, String targetPath) {
       return null;
     }
 
+    @Override
     public String[] getOverlayApks(String targetPackageName) {
       return null;
     }
