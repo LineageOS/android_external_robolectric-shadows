@@ -58,6 +58,8 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
 
   @RealObject private ApkAssets realApkAssets;
 
+  private static Key key;
+
   long getNativePtr() {
     return ReflectionHelpers.getField(realApkAssets, "mNativePtr");
   }
@@ -129,8 +131,9 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
 
   @Implementation
   protected static ApkAssets loadFromPath(@NonNull String path) throws IOException {
+    key = new Key(null, path, false, false, false);
     return getFromCacheOrLoad(
-        new Key(null, path, false, false, false),
+        key,
         () -> directlyOn(ApkAssets.class, "loadFromPath", ClassParameter.from(String.class, path)));
   }
 
@@ -153,8 +156,9 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
     }
 
     String finalPath = path;
+    key = new Key(null, path, system, false, false);
     return getFromCacheOrLoad(
-        new Key(null, path, system, false, false),
+        key,
         () -> directlyOn(ApkAssets.class, "loadFromPath",
             ClassParameter.from(String.class, finalPath),
             ClassParameter.from(boolean.class, system)));
@@ -163,8 +167,9 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
   @Implementation
   protected static @NonNull ApkAssets loadFromPath(@NonNull String path, boolean system,
       boolean forceSharedLibrary) throws IOException {
+    key = new Key(null, path, system, forceSharedLibrary, false);
     return getFromCacheOrLoad(
-        new Key(null, path, system, forceSharedLibrary, false),
+        key,
         () -> directlyOn(ApkAssets.class, "loadFromPath",
             ClassParameter.from(String.class, path),
             ClassParameter.from(boolean.class, system),
@@ -175,8 +180,9 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
   protected static ApkAssets loadFromFd(FileDescriptor fd,
       String friendlyName, boolean system, boolean forceSharedLibrary)
       throws IOException {
+    key = new Key(fd, friendlyName, system, forceSharedLibrary, false);
     return getFromCacheOrLoad(
-        new Key(fd, friendlyName, system, forceSharedLibrary, false),
+        key,
         () -> directlyOn(ApkAssets.class, "loadFromPath",
             ClassParameter.from(FileDescriptor.class, fd),
             ClassParameter.from(String.class, friendlyName),
@@ -273,6 +279,8 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
   protected static void nativeDestroy(long ptr) {
     // delete reinterpret_cast<ApkAssets>(ptr);
     Registries.NATIVE_APK_ASSETS_REGISTRY.unregister(ptr);
+    cachedApkAssets.remove(key);
+    key = null;
   }
 
   // static jstring NativeGetAssetPath(JNIEnv* env, jclass /*clazz*/, jlong ptr) {
