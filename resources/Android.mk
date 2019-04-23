@@ -1,40 +1,4 @@
-##############################################
-# Compile Robolectric resources
-##############################################
 LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := Robolectric_resources
-
-LOCAL_SRC_FILES := $(call all-java-files-under, src/main/java)
-
-LOCAL_STATIC_JAVA_LIBRARIES := \
-  Robolectric_annotations \
-  Robolectric_utils \
-  guava \
-  jsr305
-
-include $(BUILD_HOST_JAVA_LIBRARY)
-
-##############################################
-# Compile Robolectric resources tests
-##############################################
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := Robolectric_resources_tests
-
-LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
-
-LOCAL_STATIC_JAVA_LIBRARIES := \
-  Robolectric_resources \
-  mockito \
-  hamcrest \
-  guava \
-  objenesis \
-  junit \
-  truth-prebuilt
-
-include $(BUILD_HOST_JAVA_LIBRARY)
 
 ##############################################
 # Execute Robolectric resources tests

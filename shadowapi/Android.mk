@@ -1,34 +1,4 @@
-##############################################
-# Compile Robolectric shadowapi
-##############################################
 LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := Robolectric_shadowapi
-
-LOCAL_STATIC_JAVA_LIBRARIES := jsr305
-
-LOCAL_SRC_FILES := $(call all-java-files-under, src/main/java)
-
-include $(BUILD_HOST_JAVA_LIBRARY)
-
-##############################################
-# Compile Robolectric shadowapi tests
-##############################################
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := Robolectric_shadowapi_tests
-
-LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
-
-LOCAL_STATIC_JAVA_LIBRARIES := \
-  Robolectric_shadowapi \
-  hamcrest \
-  guava \
-  junit \
-  truth-prebuilt
-
-include $(BUILD_HOST_JAVA_LIBRARY)
 
 ##############################################
 # Execute Robolectric shadowapi tests
