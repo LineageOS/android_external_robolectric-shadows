@@ -22,8 +22,8 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
 LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_utils \
   robolectric-assertj-core-3.8.0 \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-junit-4.12
+  hamcrest \
+  junit
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 

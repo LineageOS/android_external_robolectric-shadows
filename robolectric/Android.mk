@@ -22,14 +22,14 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_utils \
   robolectric-host-monitor-1.0.2-alpha1 \
   robolectric-maven-ant-tasks-2.1.3 \
-  robolectric-bouncycastle-1.46 \
-  robolectric-asm-commons-6.0 \
+  bouncycastle-unbundled \
+  asm-commons-6.0 \
   robolectric-xstream-1.4.8 \
-  robolectric-asm-tree-6.0 \
-  robolectric-junit-4.12 \
-  robolectric-guava-20.0 \
+  asm-tree-6.0 \
+  junit \
+  guava \
   robolectric-ant-1.8.0 \
-  robolectric-asm-6.0 \
+  asm-6.0 \
   jsr305
 
 LOCAL_JAVA_LIBRARIES := \
@@ -67,23 +67,21 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_junit \
   Robolectric_utils \
   robolectric-host-monitor-1.0.2-alpha1 \
-  robolectric-byte-buddy-agent-1.6.5 \
   robolectric-maven-ant-tasks-2.1.3 \
   robolectric-assertj-core-3.8.0 \
-  robolectric-mockito-core-2.7.6 \
-  robolectric-bouncycastle-1.46 \
-  robolectric-hamcrest-core-1.3 \
+  mockito \
+  bouncycastle-unbundled \
+  hamcrest \
   robolectric-sqlite4java-0.282 \
-  robolectric-byte-buddy-1.6.5 \
-  robolectric-asm-commons-6.0 \
-  robolectric-objenesis-2.5 \
+  asm-commons-6.0 \
+  objenesis \
   robolectric-xstream-1.4.8 \
-  robolectric-asm-tree-6.0 \
-  robolectric-guava-20.0 \
-  robolectric-junit-4.12 \
-  robolectric-icu4j-53.1 \
+  asm-tree-6.0 \
+  guava \
+  junit \
+  icu4j \
   robolectric-ant-1.8.0 \
-  robolectric-asm-6.0 \
+  asm-6.0 \
   jsr305
 
 LOCAL_JAVA_LIBRARIES := \
