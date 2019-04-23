@@ -6,21 +6,17 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := Robolectric_shadows_multidex
 
-LOCAL_JAVA_LIBRARIES := \
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_annotations \
   Robolectric_shadowapi \
   robolectric-host-android-support-multidex \
-  robolectric-javax.annotation-api-1.2 \
+  robolectric-javax.annotation-api-1.2
+
+LOCAL_JAVA_LIBRARIES := \
   robolectric-host-android_all
 
 LOCAL_ANNOTATION_PROCESSORS := \
-  Robolectric_annotations \
-  Robolectric_processor \
-  robolectric-asm-commons-6.0 \
-  robolectric-guava-25.1-jre \
-  robolectric-asm-tree-6.0 \
-  robolectric-gson-2.8 \
-  robolectric-asm-6.0
+  Robolectric_processor
 
 LOCAL_ANNOTATION_PROCESSOR_CLASSES := org.robolectric.annotation.processing.RobolectricProcessor
 
