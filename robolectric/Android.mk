@@ -10,7 +10,9 @@ LOCAL_IS_HOST_MODULE := true
 
 intermediates := $(call local-intermediates-dir)
 
-LOCAL_JAVA_LIBRARIES := \
+LOCAL_DONT_DELETE_JAR_META_INF := true
+
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_shadows_framework \
   Robolectric_annotations \
   Robolectric_shadowapi \
@@ -18,7 +20,6 @@ LOCAL_JAVA_LIBRARIES := \
   Robolectric_sandbox \
   Robolectric_junit \
   Robolectric_utils \
-  robolectric-host-android_all \
   robolectric-host-monitor-1.0.2-alpha1 \
   robolectric-maven-ant-tasks-2.1.3 \
   robolectric-bouncycastle-1.46 \
@@ -30,6 +31,9 @@ LOCAL_JAVA_LIBRARIES := \
   robolectric-ant-1.8.0 \
   robolectric-asm-6.0 \
   jsr305
+
+LOCAL_JAVA_LIBRARIES := \
+  robolectric-host-android_all
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src/main/java)
 
@@ -51,43 +55,9 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
 
 LOCAL_JAVA_RESOURCE_DIRS := src/test/resources
 
-LOCAL_JAVA_LIBRARIES := \
-  Robolectric_shadows_framework \
-  Robolectric_annotations \
-  Robolectric_robolectric \
-  Robolectric_resources \
-  Robolectric_shadowapi \
-  Robolectric_sandbox \
-  Robolectric_junit \
-  Robolectric_utils \
-  robolectric-host-monitor-1.0.2-alpha1 \
-  robolectric-maven-ant-tasks-2.1.3 \
-  robolectric-assertj-core-3.8.0 \
-  robolectric-mockito-core-2.7.6 \
-  robolectric-bouncycastle-1.46 \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-sqlite4java-0.282 \
-  robolectric-host-android_all \
-  robolectric-guava-20.0 \
-  robolectric-junit-4.12 \
-  robolectric-ant-1.8.0 \
-  jsr305
+LOCAL_DONT_DELETE_JAR_META_INF := true
 
-include $(BUILD_HOST_JAVA_LIBRARY)
-
-##############################################
-# Execute Robolectric robolectric tests
-##############################################
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := Run_robolectric_robolectric_tests
-
-test_source_directory := $(LOCAL_PATH)/src/test/java
-
-test_resources_directory := $(LOCAL_PATH)/src/test/resources
-
-test_runtime_libraries := \
-  Robolectric_robolectric_tests \
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_shadows_framework \
   Robolectric_annotations \
   Robolectric_robolectric \
@@ -105,7 +75,6 @@ test_runtime_libraries := \
   robolectric-hamcrest-core-1.3 \
   robolectric-sqlite4java-0.282 \
   robolectric-byte-buddy-1.6.5 \
-  robolectric-host-android_all \
   robolectric-asm-commons-6.0 \
   robolectric-objenesis-2.5 \
   robolectric-xstream-1.4.8 \
@@ -116,6 +85,26 @@ test_runtime_libraries := \
   robolectric-ant-1.8.0 \
   robolectric-asm-6.0 \
   jsr305
+
+LOCAL_JAVA_LIBRARIES := \
+  robolectric-host-android_all
+
+include $(BUILD_HOST_JAVA_LIBRARY)
+
+##############################################
+# Execute Robolectric robolectric tests
+##############################################
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := Run_robolectric_robolectric_tests
+
+test_source_directory := $(LOCAL_PATH)/src/test/java
+
+test_resources_directory := $(LOCAL_PATH)/src/test/resources
+
+test_runtime_libraries := \
+  Robolectric_robolectric_tests \
+  robolectric-host-android_all
 
 include external/robolectric-shadows/run_robolectric_module_tests.mk
 

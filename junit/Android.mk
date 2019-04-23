@@ -6,7 +6,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := Robolectric_junit
 
-LOCAL_JAVA_LIBRARIES := \
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_annotations \
   Robolectric_shadowapi \
   Robolectric_sandbox \

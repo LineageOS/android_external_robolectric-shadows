@@ -6,20 +6,19 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := Robolectric_shadows_playservices
 
-LOCAL_JAVA_LIBRARIES := \
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_shadows_framework \
   Robolectric_annotations \
   Robolectric_shadowapi \
   robolectric-host-android-support-v4 \
-  robolectric-host-android_all \
   robolectric-guava-20.0 \
   robolectric-javax.annotation-api-1.2
 
+LOCAL_JAVA_LIBRARIES := \
+  robolectric-host-android_all
+
 LOCAL_ANNOTATION_PROCESSORS := \
-  Robolectric_annotations \
-  Robolectric_processor \
-  robolectric-guava-20.0 \
-  robolectric-gson-2.8
+  Robolectric_processor
 
 LOCAL_ANNOTATION_PROCESSOR_CLASSES := org.robolectric.annotation.processing.RobolectricProcessor
 
