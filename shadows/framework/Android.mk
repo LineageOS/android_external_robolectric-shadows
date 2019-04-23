@@ -17,10 +17,10 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_utils \
   robolectric-accessibility-test-framework-2.1 \
   robolectric-javax.annotation-api-1.2 \
-  robolectric-hamcrest-library-1.3 \
-  robolectric-hamcrest-core-1.3 \
+  hamcrest-library \
+  hamcrest \
   robolectric-sqlite4java-0.282 \
-  robolectric-guava-25.1-jre \
+  guava \
   icu4j \
   jsr305
 

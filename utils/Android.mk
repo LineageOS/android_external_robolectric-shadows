@@ -21,10 +21,10 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_utils \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-guava-25.1-jre \
-  robolectric-junit-4.12 \
-  robolectric-truth-0.42
+  hamcrest \
+  guava \
+  junit \
+  truth-prebuilt
 
 include $(BUILD_HOST_JAVA_LIBRARY)
 

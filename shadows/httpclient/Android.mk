@@ -53,17 +53,17 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_utils \
   robolectric-host-monitor-1.0.2-alpha1 \
   robolectric-maven-ant-tasks-2.1.3 \
-  robolectric-bouncycastle-1.46 \
-  robolectric-hamcrest-core-1.3 \
+  bouncycastle-unbundled \
+  hamcrest \
   robolectric-httpclient-4.0.3 \
-  robolectric-asm-commons-6.0 \
+  asm-commons-6.0 \
   robolectric-httpcore-4.0.1 \
-  robolectric-guava-25.1-jre \
-  robolectric-asm-tree-6.0 \
-  robolectric-junit-4.12 \
-  robolectric-truth-0.42 \
+  guava \
+  asm-tree-6.0 \
+  junit \
+  truth-prebuilt \
   robolectric-ant-1.8.0 \
-  robolectric-asm-6.0 \
+  asm-6.0 \
   jsr305
 
 LOCAL_JAVA_LIBRARIES := \

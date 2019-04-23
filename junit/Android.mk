@@ -11,12 +11,12 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_shadowapi \
   Robolectric_sandbox \
   Robolectric_utils \
-  robolectric-asm-commons-6.0 \
-  robolectric-guava-25.1-jre \
-  robolectric-asm-tree-6.0 \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-junit-4.12 \
-  robolectric-asm-6.0 \
+  asm-commons-6.0 \
+  guava \
+  asm-tree-6.0 \
+  hamcrest \
+  junit \
+  asm-6.0 \
   jsr305
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src/main/java)
