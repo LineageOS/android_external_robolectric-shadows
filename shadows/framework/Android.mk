@@ -10,7 +10,7 @@ LOCAL_IS_HOST_MODULE := true
 
 intermediates := $(call local-intermediates-dir)
 
-LOCAL_JAVA_LIBRARIES := \
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_annotations \
   Robolectric_shadowapi \
   Robolectric_resources \
@@ -20,10 +20,12 @@ LOCAL_JAVA_LIBRARIES := \
   robolectric-hamcrest-library-1.3 \
   robolectric-hamcrest-core-1.3 \
   robolectric-sqlite4java-0.282 \
-  robolectric-host-android_all \
   robolectric-guava-25.1-jre \
   icu4j \
   jsr305
+
+LOCAL_JAVA_LIBRARIES := \
+  robolectric-host-android_all
 
 LOCAL_JAVA_RESOURCE_FILES := \
   $(intermediates)/sqlite-natives:linux-x86_64/libsqlite4java.so \
@@ -33,14 +35,7 @@ LOCAL_JAVA_RESOURCE_FILES := \
   $(intermediates)/sqlite-natives:windows-x86/sqlite4java.dll
 
 LOCAL_ANNOTATION_PROCESSORS := \
-  Robolectric_annotations \
-  Robolectric_processor \
-  Robolectric_shadowapi \
-  robolectric-asm-commons-6.0 \
-  robolectric-guava-25.1-jre \
-  robolectric-asm-tree-6.0 \
-  robolectric-gson-2.8 \
-  robolectric-asm-6.0
+  Robolectric_processor
 
 LOCAL_ANNOTATION_PROCESSOR_CLASSES := org.robolectric.annotation.processing.RobolectricProcessor
 
