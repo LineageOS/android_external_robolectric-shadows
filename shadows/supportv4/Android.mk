@@ -53,21 +53,19 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   robolectric-accessibility-test-framework-2.1 \
   robolectric-host-monitor-1.0.2-alpha1 \
   robolectric-host-android-support-v4 \
-  robolectric-byte-buddy-agent-1.6.5 \
   robolectric-maven-ant-tasks-2.1.3 \
-  robolectric-hamcrest-library-1.3 \
-  robolectric-mockito-core-2.16.0 \
-  robolectric-bouncycastle-1.46 \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-byte-buddy-1.6.5 \
-  robolectric-asm-commons-6.0 \
-  robolectric-guava-25.1-jre \
-  robolectric-objenesis-2.5 \
-  robolectric-asm-tree-6.0 \
-  robolectric-junit-4.12 \
-  robolectric-truth-0.42 \
+  hamcrest-library \
+  mockito \
+  bouncycastle-unbundled \
+  hamcrest \
+  asm-commons-6.0 \
+  guava \
+  objenesis \
+  asm-tree-6.0 \
+  junit \
+  truth-prebuilt \
   robolectric-ant-1.8.0 \
-  robolectric-asm-6.0 \
+  asm-6.0 \
   jsr305
 
 LOCAL_JAVA_LIBRARIES := \
