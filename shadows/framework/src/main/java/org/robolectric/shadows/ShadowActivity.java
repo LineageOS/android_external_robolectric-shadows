@@ -183,7 +183,7 @@ public class ShadowActivity extends ShadowContextThemeWrapper {
           ReflectionHelpers.ClassParameter.from(IVoiceInteractor.class, null),
           ReflectionHelpers.ClassParameter.from(Window.class, null) // ADDED
           );
-    } else if (apiLevel >= Build.VERSION_CODES.O) {
+    } else if (apiLevel <= Build.VERSION_CODES.P) {
       ReflectionHelpers.callInstanceMethod(
           Activity.class,
           realActivity,
@@ -209,6 +209,33 @@ public class ShadowActivity extends ShadowContextThemeWrapper {
           ReflectionHelpers.ClassParameter.from(
               ViewRootImpl.ActivityConfigCallback.class, null) // ADDED
           );
+    } else if (apiLevel >= Build.VERSION_CODES.Q) {
+      ReflectionHelpers.callInstanceMethod(
+          Activity.class,
+          realActivity,
+          "attach",
+          ReflectionHelpers.ClassParameter.from(Context.class, baseContext),
+          ReflectionHelpers.ClassParameter.from(
+                  ActivityThread.class, RuntimeEnvironment.getActivityThread()),
+          ReflectionHelpers.ClassParameter.from(Instrumentation.class, instrumentation),
+          ReflectionHelpers.ClassParameter.from(IBinder.class, null),
+          ReflectionHelpers.ClassParameter.from(int.class, 0),
+          ReflectionHelpers.ClassParameter.from(Application.class, application),
+          ReflectionHelpers.ClassParameter.from(Intent.class, intent),
+          ReflectionHelpers.ClassParameter.from(ActivityInfo.class, activityInfo),
+          ReflectionHelpers.ClassParameter.from(CharSequence.class, activityTitle),
+          ReflectionHelpers.ClassParameter.from(Activity.class, null),
+          ReflectionHelpers.ClassParameter.from(String.class, "id"),
+          ReflectionHelpers.ClassParameter.from(nonConfigurationInstancesClass, null),
+          ReflectionHelpers.ClassParameter.from(
+                  Configuration.class, application.getResources().getConfiguration()),
+          ReflectionHelpers.ClassParameter.from(String.class, "referrer"),
+          ReflectionHelpers.ClassParameter.from(IVoiceInteractor.class, null),
+          ReflectionHelpers.ClassParameter.from(Window.class, null),
+          ReflectionHelpers.ClassParameter.from(
+                  ViewRootImpl.ActivityConfigCallback.class, null),
+          ReflectionHelpers.ClassParameter.from(IBinder.class, null) // ADDED
+      );
     } else {
       throw new RuntimeException("Could not find AndroidRuntimeAdapter for API level: " + apiLevel);
     }
