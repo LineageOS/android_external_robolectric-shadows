@@ -4,7 +4,7 @@
 
 java_library_host {
     name: "Robolectric_junit",
-    static_libs: [
+    libs: [
         "Robolectric_annotations",
         "Robolectric_shadowapi",
         "Robolectric_sandbox",
