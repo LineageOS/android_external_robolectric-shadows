@@ -5,7 +5,7 @@
 java_library_host {
     name: "Robolectric_resources",
     srcs: ["src/main/java/**/*.java"],
-    static_libs: [
+    libs: [
         "Robolectric_annotations",
         "Robolectric_utils",
         "guava",

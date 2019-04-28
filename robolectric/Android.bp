@@ -4,7 +4,7 @@
 
 java_library_host {
     name: "Robolectric_robolectric",
-    static_libs: [
+    libs: [
         "Robolectric_shadows_framework",
         "Robolectric_annotations",
         "Robolectric_shadowapi",
@@ -23,8 +23,8 @@ java_library_host {
         "robolectric-ant-1.8.0",
         "asm-6.0",
         "jsr305",
+        "robolectric-host-android_all",
     ],
-    libs: ["robolectric-host-android_all"],
     srcs: ["src/main/java/**/*.java"],
 
     java_resources: [":robolectric-version.properties"],
@@ -45,6 +45,13 @@ java_test_host {
     java_resource_dirs: ["src/test/resources"],
     static_libs: [
         "Robolectric_robolectric",
+        "Robolectric_shadows_framework",
+        "Robolectric_annotations",
+        "Robolectric_shadowapi",
+        "Robolectric_resources",
+        "Robolectric_sandbox",
+        "Robolectric_junit",
+        "Robolectric_utils",
         "robolectric-host-monitor-1.0.2-alpha1",
         "robolectric-maven-ant-tasks-2.1.3",
         "robolectric-assertj-core-3.8.0",

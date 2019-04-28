@@ -4,7 +4,7 @@
 
 java_library_host {
     name: "Robolectric_shadowapi",
-    static_libs: ["jsr305"],
+    libs: ["jsr305"],
     srcs: ["src/main/java/**/*.java"],
 }
 
