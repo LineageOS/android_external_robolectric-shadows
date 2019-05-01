@@ -37,7 +37,7 @@
 ### Used for running tests.
 ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     # Where to find Robolectric.
-    my_robolectric_script_path := $(call my-dir)
+    my_robolectric_script_path := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 
     my_collect_target := $(LOCAL_MODULE)-coverage
     my_report_target := $(LOCAL_MODULE)-jacoco
