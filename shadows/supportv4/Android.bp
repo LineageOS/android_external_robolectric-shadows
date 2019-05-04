@@ -4,7 +4,7 @@
 
 java_library_host {
     name: "Robolectric_shadows_supportv4",
-    static_libs: [
+    libs: [
         "Robolectric_shadows_framework",
         "Robolectric_annotations",
         "Robolectric_robolectric",
@@ -12,8 +12,8 @@ java_library_host {
         "Robolectric_utils",
         "robolectric-javax.annotation-api-1.2",
         "robolectric-host-android-support-v4",
+        "robolectric-host-android_all",
     ],
-    libs: ["robolectric-host-android_all"],
     plugins: ["Robolectric_processor"],
     javacflags: ["-Aorg.robolectric.annotation.processing.shadowPackage=org.robolectric.shadows.support.v4"],
     srcs: ["src/main/java/**/*.java"],

@@ -4,7 +4,7 @@
 
 java_library_host {
     name: "Robolectric_shadows_httpclient",
-    static_libs: [
+    libs: [
         "Robolectric_shadows_framework",
         "Robolectric_annotations",
         "Robolectric_shadowapi",
@@ -12,8 +12,6 @@ java_library_host {
         "robolectric-httpclient-4.0.3",
         "robolectric-httpcore-4.0.1",
         "robolectric-javax.annotation-api-1.2",
-    ],
-    libs: [
         "robolectric-host-android_all",
         "robolectric-host-org_apache_http_legacy",
     ],
