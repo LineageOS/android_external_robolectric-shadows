@@ -8,7 +8,7 @@ LOCAL_MODULE := Robolectric_sandbox
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src/main/java)
 
-LOCAL_JAVA_LIBRARIES := \
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_annotations \
   Robolectric_shadowapi \
   Robolectric_utils \
@@ -29,15 +29,19 @@ LOCAL_MODULE := Robolectric_sandbox_tests
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
 
-LOCAL_JAVA_LIBRARIES := \
+LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_annotations \
   Robolectric_shadowapi \
   Robolectric_sandbox \
   Robolectric_junit \
   Robolectric_utils \
+  robolectric-byte-buddy-agent-1.6.5 \
   robolectric-assertj-core-3.8.0 \
   robolectric-mockito-core-2.7.6 \
+  robolectric-hamcrest-core-1.3 \
+  robolectric-byte-buddy-1.6.5 \
   robolectric-asm-commons-6.0 \
+  robolectric-objenesis-2.5 \
   robolectric-asm-tree-6.0 \
   robolectric-guava-20.0 \
   robolectric-junit-4.12 \
@@ -56,23 +60,6 @@ LOCAL_MODULE := Run_robolectric_sandbox_tests
 test_source_directory := $(LOCAL_PATH)/src/test/java
 
 test_runtime_libraries := \
-  Robolectric_sandbox_tests \
-  Robolectric_annotations \
-  Robolectric_shadowapi \
-  Robolectric_sandbox \
-  Robolectric_junit \
-  Robolectric_utils \
-  robolectric-byte-buddy-agent-1.6.5 \
-  robolectric-assertj-core-3.8.0 \
-  robolectric-mockito-core-2.7.6 \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-byte-buddy-1.6.5 \
-  robolectric-asm-commons-6.0 \
-  robolectric-objenesis-2.5 \
-  robolectric-asm-tree-6.0 \
-  robolectric-guava-20.0 \
-  robolectric-junit-4.12 \
-  robolectric-asm-6.0 \
-  jsr305
+  Robolectric_sandbox_tests
 
 include external/robolectric-shadows/run_robolectric_module_tests.mk
