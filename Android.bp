@@ -86,3 +86,72 @@ java_genrule {
         "-x META-INF/**/* " +
         "-0 resources.arsc",
 }
+
+// Make robolectric_android-all-stub available as a host jar
+java_device_for_host {
+    name: "robolectric-host-android_all",
+    libs: ["robolectric_android-all-stub"],
+}
+
+//#############################################
+// Assemble Robolectric_all
+//#############################################
+
+java_library_host {
+    name: "Robolectric_all",
+
+    static_libs: [
+        "Robolectric_shadows_httpclient",
+        "Robolectric_shadows_framework",
+        "Robolectric_shadows_supportv4",
+        "Robolectric_shadows_multidex",
+        "Robolectric_robolectric",
+        "Robolectric_annotations",
+        "Robolectric_resources",
+        "Robolectric_shadowapi",
+        "Robolectric_sandbox",
+        "Robolectric_junit",
+        "Robolectric_utils",
+        "asm-6.0",
+        "junit",
+        "asm-tree-6.0",
+        "asm-commons-6.0",
+        "bouncycastle-unbundled",
+        "robolectric-sqlite4java-0.282",
+        "hamcrest",
+        "hamcrest-library",
+        "robolectric-host-org_apache_http_legacy",
+    ],
+
+    java_resource_dirs: [
+        "shadows/framework/src/main/resources",
+        "src/main/resources",
+    ],
+}
+
+// Make Robolectric_all available as a target jar
+java_host_for_device {
+    name: "Robolectric_all-target",
+    libs: ["Robolectric_all"],
+}
+
+// Make dependencies available as host jars
+java_device_for_host {
+    name: "robolectric-host-android-support-v4",
+    libs: ["android-support-v4"],
+}
+
+java_device_for_host {
+    name: "robolectric-host-android-support-multidex",
+    libs: ["android-support-multidex"],
+}
+
+java_device_for_host {
+    name: "robolectric-host-org_apache_http_legacy",
+    libs: ["org.apache.http.legacy.stubs"],
+}
+
+java_device_for_host {
+    name: "robolectric-host-monitor-1.0.2-alpha1",
+    libs: ["robolectric-monitor-1.0.2-alpha1"],
+}

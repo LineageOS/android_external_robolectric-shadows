@@ -1,31 +1,4 @@
-##############################################
-# Compile Robolectric utils
-##############################################
 LOCAL_PATH := $(call my-dir)
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := Robolectric_utils
-
-LOCAL_SRC_FILES := $(call all-java-files-under, src/main/java)
-
-include $(BUILD_HOST_JAVA_LIBRARY)
-
-##############################################
-# Compile Robolectric utils tests
-##############################################
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := Robolectric_utils_tests
-
-LOCAL_SRC_FILES := $(call all-java-files-under, src/test/java)
-
-LOCAL_STATIC_JAVA_LIBRARIES := \
-  Robolectric_utils \
-  robolectric-assertj-core-3.8.0 \
-  hamcrest \
-  junit
-
-include $(BUILD_HOST_JAVA_LIBRARY)
 
 ##############################################
 # Execute Robolectric utils tests
