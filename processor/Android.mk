@@ -14,8 +14,8 @@ LOCAL_CLASSPATH := $(HOST_JDK_TOOLS_JAR)
 
 LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_annotations \
-  robolectric-guava-20.0 \
-  robolectric-gson-2.8 \
+  guava \
+  gson-prebuilt-jar \
   jsr305
 
 include $(BUILD_HOST_JAVA_LIBRARY)
@@ -37,17 +37,15 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
   Robolectric_annotations \
   Robolectric_processor \
   Robolectric_shadowapi \
-  robolectric-byte-buddy-agent-1.6.5 \
-  robolectric-compile-testing-0.12 \
+  robolectric-compile-testing-0.15 \
   robolectric-javax.annotation-api-1.2 \
-  robolectric-mockito-core-2.7.6 \
-  robolectric-hamcrest-core-1.3 \
-  robolectric-byte-buddy-1.6.5 \
-  robolectric-objenesis-2.5 \
-  robolectric-guava-20.0 \
-  robolectric-junit-4.12 \
-  robolectric-truth-0.36 \
-  robolectric-gson-2.8 \
+  mockito \
+  hamcrest \
+  objenesis \
+  guava \
+  junit \
+  truth-prebuilt \
+  gson-prebuilt-jar \
   jsr305
 
 # Disable annotation processing while compiling tests to avoid executing RobolectricProcessor.
