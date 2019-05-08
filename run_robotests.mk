@@ -59,6 +59,8 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
         $(LOCAL_INSTRUMENT_SOURCE_DIRS),\
         $(my_instrument_makefile_dir)src $(my_instrument_makefile_dir)java)
 
+    my_instrument_srcjars := $(LOCAL_INSTRUMENT_SRCJARS)
+
     ##########################
     # Used by base_rules.mk. #
     ##########################
@@ -210,4 +212,8 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     my_srcs_jars :=
     my_target :=
     my_collect_file :=
+
+    my_instrument_makefile_dir :=
+    my_instrument_source_dirs :=
+    my_instrument_srcjars :=
 endif
