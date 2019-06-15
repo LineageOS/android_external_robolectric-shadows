@@ -1325,9 +1325,10 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
     return null;
   }
 
+  /** Behaves as {@link #resolveActivity(Intent, int)} and currently ignores userId. */
   @Implementation(minSdk = JELLY_BEAN_MR1)
   protected ResolveInfo resolveActivityAsUser(Intent intent, int flags, int userId) {
-    return null;
+    return resolveActivity(intent, flags);
   }
 
   @Implementation
