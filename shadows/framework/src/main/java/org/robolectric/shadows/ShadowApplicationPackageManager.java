@@ -20,6 +20,7 @@ import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.O_MR1;
 import static android.os.Build.VERSION_CODES.P;
+import static android.os.Build.VERSION_CODES.Q;
 import static org.robolectric.shadow.api.Shadow.invokeConstructor;
 import static org.robolectric.util.ReflectionHelpers.ClassParameter.from;
 
@@ -45,6 +46,7 @@ import android.content.pm.IPackageManager;
 import android.content.pm.IPackageStatsObserver;
 import android.content.pm.InstrumentationInfo;
 import android.content.pm.IntentFilterVerificationInfo;
+import android.content.pm.ModuleInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageItemInfo;
 import android.content.pm.PackageManager;
@@ -76,6 +78,7 @@ import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.storage.VolumeInfo;
+
 import android.telecom.TelecomManager;
 import android.util.Pair;
 import com.google.common.base.Function;
@@ -1858,5 +1861,10 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
   @Implementation(minSdk = O)
   protected boolean isInstantApp(String packageName) {
     return false;
+  }
+
+  @Implementation(minSdk = Q)
+  protected List<ModuleInfo> getInstalledModules(int flags) {
+    return new ArrayList<>();
   }
 }
