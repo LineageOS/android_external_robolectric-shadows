@@ -59,6 +59,8 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
         $(LOCAL_INSTRUMENT_SOURCE_DIRS),\
         $(my_instrument_makefile_dir)src $(my_instrument_makefile_dir)java)
 
+    my_instrument_srcjars := $(LOCAL_INSTRUMENT_SRCJARS)
+
     ##########################
     # Used by base_rules.mk. #
     ##########################
@@ -112,7 +114,7 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     my_filename_stem := test
 
     # Define rules that copy android-all jars to the intermediates folder.
-    p_android_all_source_jar := $(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub, , COMMON)/classes.jar
+    local_android_all_source_jar := $(call intermediates-dir-for, JAVA_LIBRARIES, robolectric_android-all-stub,,COMMON)/classes.jar
     android_all_lib_path := prebuilts/misc/common/robolectric/android-all
     my_robolectric_path := $(intermediates.COMMON)/android-all
     copy_android_all_jar_pairs := \
@@ -126,8 +128,9 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
       $(android_all_lib_path)/android-all-7.0.0_r1-robolectric-r1.jar:$(my_robolectric_path)/android-all-7.0.0_r1-robolectric-r1.jar \
       $(android_all_lib_path)/android-all-7.1.0_r7-robolectric-r1.jar:$(my_robolectric_path)/android-all-7.1.0_r7-robolectric-r1.jar \
       $(android_all_lib_path)/android-all-8.0.0_r4-robolectric-r1.jar:$(my_robolectric_path)/android-all-8.0.0_r4-robolectric-r1.jar \
-      $(android_all_lib_path)/android-all-8.1.0-robolectric-r4458339.jar:$(my_robolectric_path)/android-all-8.1.0-robolectric-r4458339.jar \
-      $(p_android_all_source_jar):$(my_robolectric_path)/android-all-P-robolectric-r0.jar
+      $(android_all_lib_path)/android-all-8.1.0-robolectric-4611349.jar:$(my_robolectric_path)/android-all-8.1.0-robolectric-4611349.jar \
+      $(android_all_lib_path)/android-all-9-robolectric-4913185-2.jar:$(my_robolectric_path)/android-all-9-robolectric-4913185-2.jar \
+      $(local_android_all_source_jar):$(my_robolectric_path)/android-all-Q-robolectric-r0.jar
     copy_android_all_jars := $(call copy-many-files, $(copy_android_all_jar_pairs))
 
     $(my_target): $(copy_android_all_jars)
@@ -209,4 +212,8 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     my_srcs_jars :=
     my_target :=
     my_collect_file :=
+
+    my_instrument_makefile_dir :=
+    my_instrument_source_dirs :=
+    my_instrument_srcjars :=
 endif

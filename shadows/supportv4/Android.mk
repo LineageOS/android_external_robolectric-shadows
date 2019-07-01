@@ -12,8 +12,6 @@ test_source_directory := $(LOCAL_PATH)/src/test/java
 test_resources_directory := $(LOCAL_PATH)/src/test/resources
 
 test_runtime_libraries := \
-  Robolectric_shadows_supportv4 \
-  Robolectric_shadows_framework \
   Robolectric_shadows_supportv4_tests \
   robolectric-host-android_all
 

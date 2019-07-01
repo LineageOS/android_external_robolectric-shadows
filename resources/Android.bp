@@ -21,14 +21,15 @@ java_test_host {
     name: "Robolectric_resources_tests",
     srcs: ["src/test/java/**/*.java"],
     static_libs: [
-        "Robolectric_annotations",
         "Robolectric_resources",
+        "Robolectric_annotations",
         "Robolectric_utils",
-        "robolectric-assertj-core-3.8.0",
         "mockito",
         "hamcrest",
-        "objenesis",
         "guava",
+        "objenesis",
         "junit",
+        "truth-prebuilt",
+        "jsr305",
     ],
 }

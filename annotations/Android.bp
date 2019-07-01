@@ -5,6 +5,7 @@
 java_library_host {
     name: "Robolectric_annotations",
     static_libs: [
+        "Robolectric_shadowapi",
         "jsr305",
     ],
     libs: ["robolectric-host-android_all"],
