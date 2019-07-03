@@ -10,3 +10,4 @@ prebuilts/misc/common/robolectric/android-all/android-all-7.1.0_r7-robolectric-r
 prebuilts/misc/common/robolectric/android-all/android-all-8.0.0_r4-robolectric-r1.jar
 prebuilts/misc/common/robolectric/android-all/android-all-8.1.0-robolectric-4611349.jar
 prebuilts/misc/common/robolectric/android-all/android-all-9-robolectric-4913185-2.jar
+prebuilts/misc/common/robolectric/android-all/android-all-9plus-robolectric-5616371.jar

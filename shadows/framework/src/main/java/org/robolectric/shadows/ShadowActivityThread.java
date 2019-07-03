@@ -1,5 +1,7 @@
 package org.robolectric.shadows;
 
+import static android.os.Build.VERSION_CODES.R;
+
 import android.app.ActivityThread;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -56,6 +58,29 @@ public class ShadowActivityThread {
           }
         });
   }
+
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = R)
+  public static Object getPermissionManager() {
+    ClassLoader classLoader = ShadowActivityThread.class.getClassLoader();
+    Class<?> iPermissionManagerClass;
+    try {
+      iPermissionManagerClass = classLoader.loadClass("android.permission.IPermissionManager");
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    return Proxy.newProxyInstance(
+        classLoader,
+        new Class[] {iPermissionManagerClass},
+        new InvocationHandler() {
+          @Override
+          public Object invoke(Object proxy, @Nonnull Method method, Object[] args)
+              throws Exception {
+            return method.getDefaultValue();
+          }
+        });
+  }
+  // END-INTERNAL
 
   @Implementation
   public static Object currentActivityThread() {
