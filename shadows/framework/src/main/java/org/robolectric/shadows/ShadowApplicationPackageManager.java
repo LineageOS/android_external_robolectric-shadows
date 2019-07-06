@@ -21,6 +21,8 @@ import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.O_MR1;
 import static android.os.Build.VERSION_CODES.P;
 import static android.os.Build.VERSION_CODES.Q;
+import static android.os.Build.VERSION_CODES.R;
+
 import static org.robolectric.shadow.api.Shadow.invokeConstructor;
 import static org.robolectric.util.ReflectionHelpers.ClassParameter.from;
 
@@ -79,6 +81,7 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.storage.VolumeInfo;
 
+import android.permission.IPermissionManager;
 import android.telecom.TelecomManager;
 import android.util.Pair;
 import com.google.common.base.Function;
@@ -115,7 +118,7 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
 
   private Context context;
 
-  @Implementation
+  @Implementation(maxSdk = Q)
   protected void __constructor__(Object contextImpl, Object pm) {
     try {
       invokeConstructor(
@@ -128,6 +131,24 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
     }
     context = (Context) contextImpl;
   }
+
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = R)
+  protected void __constructor__(
+          Object contextImpl, Object packageManager, Object permissionManager) {
+    try {
+      invokeConstructor(
+          ApplicationPackageManager.class,
+          realObject,
+          from(Class.forName(ShadowContextImpl.CLASS_NAME), contextImpl),
+          from(IPackageManager.class, packageManager),
+          from(IPermissionManager.class, permissionManager));
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    context = (Context) contextImpl;
+  }
+  // END-INTERNAL
 
   @Implementation
   public List<PackageInfo> getInstalledPackages(int flags) {
