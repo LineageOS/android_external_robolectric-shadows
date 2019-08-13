@@ -17,6 +17,7 @@ java_library {
 
     static_libs: [
         "conscrypt",
+        "core-icu4j",
         "core-libart",
         "ext",
         "framework",
