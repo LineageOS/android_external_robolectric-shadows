@@ -6,6 +6,7 @@ import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.P;
 // BEGIN-INTERNAL
 import static android.os.Build.VERSION_CODES.Q;
+import static android.os.Build.VERSION_CODES.R;
 // END-INTERNAL
 import static org.robolectric.shadow.api.Shadow.invokeConstructor;
 
@@ -151,7 +152,7 @@ public class ShadowAppOpsManager {
     return mode;
   }
 
-  @Implementation(minSdk = KITKAT)
+  @Implementation(minSdk = KITKAT, maxSdk = Q)
   public int noteOp(int op, int uid, String packageName) {
     mStoredOps.put(getInternalKey(uid, packageName), op);
 
@@ -159,11 +160,28 @@ public class ShadowAppOpsManager {
     return AppOpsManager.MODE_ALLOWED;
   }
 
-  @Implementation(minSdk = M)
+  @Implementation(minSdk = R)
+  @HiddenApi
+  public int noteOp(int op, int uid, String packageName, String message) {
+    mStoredOps.put(getInternalKey(uid, packageName), op);
+
+    // Permission check not currently implemented in this shadow.
+    return AppOpsManager.MODE_ALLOWED;
+  }
+
+  @Implementation(minSdk = M, maxSdk = Q)
   @HiddenApi
   protected int noteProxyOpNoThrow(int op, String proxiedPackageName) {
     mStoredOps.put(getInternalKey(Binder.getCallingUid(), proxiedPackageName), op);
     return checkOpNoThrow(op, Binder.getCallingUid(), proxiedPackageName);
+  }
+
+  @Implementation(minSdk = R)
+  @HiddenApi
+  protected int noteProxyOpNoThrow(int op, String proxiedPackageName, int proxiedUid,
+          String message) {
+    mStoredOps.put(getInternalKey(proxiedUid, proxiedPackageName), op);
+    return checkOpNoThrow(op, proxiedUid, proxiedPackageName);
   }
 
   @Implementation(minSdk = KITKAT)
