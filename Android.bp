@@ -30,6 +30,7 @@ java_library {
         "services",
         "services.accessibility",
         "telephony-common",
+        "updatable-media",
 
         "robolectric_tzdata",
         "robolectric_framework_res",
@@ -102,6 +103,7 @@ java_library_host {
     name: "Robolectric_all",
 
     static_libs: [
+        "Robolectric_shadows_androidx_fragment",
         "Robolectric_shadows_httpclient",
         "Robolectric_shadows_framework",
         "Robolectric_shadows_supportv4",
@@ -116,11 +118,13 @@ java_library_host {
         "asm-6.0", // if upgrading to ASM 7.0+, unset my_require_v53_or_lower_class_files in robotest-internal.mk (requires robolectric 4.0.x, see b/135459087)
         "junit",
         "asm-tree-6.0",
+        "guava",
         "asm-commons-6.0",
         "bouncycastle-unbundled",
         "robolectric-sqlite4java-0.282",
         "hamcrest",
         "hamcrest-library",
+        "robolectric-host-androidx-test-runner",
         "robolectric-host-org_apache_http_legacy",
     ],
 
@@ -138,6 +142,31 @@ java_host_for_device {
 
 // Make dependencies available as host jars
 java_device_for_host {
+    name: "robolectric-host-androidx-test-core",
+    libs: ["androidx.test.core"],
+}
+
+java_device_for_host {
+    name: "robolectric-host-androidx-test-ext-junit",
+    libs: ["androidx.test.ext.junit"],
+}
+
+java_device_for_host {
+    name: "robolectric-host-androidx-test-monitor",
+    libs: ["androidx.test.monitor"],
+}
+
+java_device_for_host {
+    name: "robolectric-host-androidx-test-runner",
+    libs: ["androidx.test.runner"],
+}
+
+java_device_for_host {
+    name: "robolectric-host-androidx",
+    libs: ["androidx.fragment_fragment"],
+}
+
+java_device_for_host {
     name: "robolectric-host-android-support-v4",
     libs: ["android-support-v4"],
 }
@@ -150,9 +179,4 @@ java_device_for_host {
 java_device_for_host {
     name: "robolectric-host-org_apache_http_legacy",
     libs: ["org.apache.http.legacy.stubs"],
-}
-
-java_device_for_host {
-    name: "robolectric-host-monitor-1.0.2-alpha1",
-    libs: ["robolectric-monitor-1.0.2-alpha1"],
 }

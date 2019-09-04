@@ -16,8 +16,9 @@ java_test_host {
     srcs: ["src/test/java/**/*.java"],
     static_libs: [
         "Robolectric_utils",
-        "robolectric-assertj-core-3.8.0",
         "hamcrest",
+        "guava",
         "junit",
+        "truth-prebuilt",
     ],
 }
