@@ -3,6 +3,7 @@ package org.robolectric.shadows;
 import static android.os.Build.VERSION_CODES.R;
 
 import android.app.ActivityThread;
+import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.RemoteException;
@@ -46,6 +47,28 @@ public class ShadowActivityThread {
                 return RuntimeEnvironment.application
                     .getPackageManager()
                     .getApplicationInfo(packageName, flags);
+              } catch (PackageManager.NameNotFoundException e) {
+                throw new RemoteException(e.getMessage());
+              }
+            } else if (method.getName().equals("getActivityInfo")) {
+              ComponentName className = (ComponentName) args[0];
+              int flags = (Integer) args[1];
+
+              try {
+                return RuntimeEnvironment.application
+                        .getPackageManager()
+                        .getActivityInfo(className, flags);
+              } catch (PackageManager.NameNotFoundException e) {
+                throw new RemoteException(e.getMessage());
+              }
+            } else if (method.getName().equals("getServiceInfo")) {
+              ComponentName className = (ComponentName) args[0];
+              int flags = (Integer) args[1];
+
+              try {
+                return RuntimeEnvironment.application
+                        .getPackageManager()
+                        .getServiceInfo(className, flags);
               } catch (PackageManager.NameNotFoundException e) {
                 throw new RemoteException(e.getMessage());
               }
