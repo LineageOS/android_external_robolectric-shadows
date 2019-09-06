@@ -10,6 +10,8 @@ import android.os.RemoteException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
+
 import javax.annotation.Nonnull;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
@@ -99,6 +101,9 @@ public class ShadowActivityThread {
           @Override
           public Object invoke(Object proxy, @Nonnull Method method, Object[] args)
               throws Exception {
+            if (method.getName().equals("getSplitPermissions")) {
+              return Collections.emptyList();
+            }
             return method.getDefaultValue();
           }
         });
