@@ -3,12 +3,15 @@ package org.robolectric.shadows;
 import static android.os.Build.VERSION_CODES.R;
 
 import android.app.ActivityThread;
+import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.RemoteException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
+
 import javax.annotation.Nonnull;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
@@ -49,6 +52,28 @@ public class ShadowActivityThread {
               } catch (PackageManager.NameNotFoundException e) {
                 throw new RemoteException(e.getMessage());
               }
+            } else if (method.getName().equals("getActivityInfo")) {
+              ComponentName className = (ComponentName) args[0];
+              int flags = (Integer) args[1];
+
+              try {
+                return RuntimeEnvironment.application
+                        .getPackageManager()
+                        .getActivityInfo(className, flags);
+              } catch (PackageManager.NameNotFoundException e) {
+                throw new RemoteException(e.getMessage());
+              }
+            } else if (method.getName().equals("getServiceInfo")) {
+              ComponentName className = (ComponentName) args[0];
+              int flags = (Integer) args[1];
+
+              try {
+                return RuntimeEnvironment.application
+                        .getPackageManager()
+                        .getServiceInfo(className, flags);
+              } catch (PackageManager.NameNotFoundException e) {
+                throw new RemoteException(e.getMessage());
+              }
             } else if (method.getName().equals("notifyPackageUse")) {
               return null;
             } else if (method.getName().equals("getPackageInstaller")) {
@@ -76,6 +101,9 @@ public class ShadowActivityThread {
           @Override
           public Object invoke(Object proxy, @Nonnull Method method, Object[] args)
               throws Exception {
+            if (method.getName().equals("getSplitPermissions")) {
+              return Collections.emptyList();
+            }
             return method.getDefaultValue();
           }
         });
