@@ -9,12 +9,7 @@ import android.annotation.NonNull;
 import android.content.res.ApkAssets;
 import android.content.res.AssetManager;
 import android.os.Build;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Objects;
+
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
@@ -27,6 +22,13 @@ import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowApkAssets.Picker;
 import org.robolectric.util.ReflectionHelpers;
 import org.robolectric.util.ReflectionHelpers.ClassParameter;
+
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Objects;
 
 
 // transliterated from
@@ -206,7 +208,7 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
 
   // static jlong NativeLoad(JNIEnv* env, jclass /*clazz*/, jstring java_path, jboolean system,
 //                         jboolean force_shared_lib, jboolean overlay) {
-  @Implementation
+  @Implementation(maxSdk = Build.VERSION_CODES.Q)
   protected static long nativeLoad(String java_path, boolean system,
       boolean force_shared_lib, boolean overlay) throws IOException {
     String path = java_path;
@@ -239,9 +241,47 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
     return Registries.NATIVE_APK_ASSETS_REGISTRY.register(apk_assets);
   }
 
+  // BEGIN-INTERNAL
+  // static jlong NativeLoad(JNIEnv* env, jclass /*clazz*/, jstring java_path, jboolean system,
+//                         jboolean force_shared_lib, jboolean overlay, jboolean for_loader) {
+  @Implementation(minSdk = Build.VERSION_CODES.R)
+  protected static long nativeLoad(String java_path, boolean system,
+          boolean force_shared_lib, boolean overlay, boolean for_loader) throws IOException {
+    String path = java_path;
+    if (path == null) {
+      return 0;
+    }
+
+    ATRACE_NAME(String.format("LoadApkAssets(%s)", path));
+
+    CppApkAssets apk_assets;
+    try {
+      if (overlay) {
+        apk_assets = CppApkAssets.LoadOverlay(path, system);
+      } else if (force_shared_lib) {
+        apk_assets =
+                CppApkAssets.LoadAsSharedLibrary(path, system);
+      } else {
+        apk_assets = CppApkAssets.Load(path, system);
+      }
+    } catch (OutOfMemoryError e) {
+      OutOfMemoryError outOfMemoryError = new OutOfMemoryError("Failed to load " + path);
+      outOfMemoryError.initCause(e);
+      throw outOfMemoryError;
+    }
+
+    if (apk_assets == null) {
+      String error_msg = String.format("Failed to load asset path %s", path);
+      throw new IOException(error_msg);
+    }
+    return Registries.NATIVE_APK_ASSETS_REGISTRY.register(apk_assets);
+  }
+  // END-INTERNAL
+
   // static jlong NativeLoadFromFd(JNIEnv* env, jclass /*clazz*/, jobject file_descriptor,
-//                               jstring friendly_name, jboolean system, jboolean force_shared_lib) {
-  @Implementation
+//                               jstring friendly_name, jboolean system, jboolean
+//                               force_shared_lib) {
+  @Implementation(maxSdk = Build.VERSION_CODES.Q)
   protected static long nativeLoadFromFd(FileDescriptor file_descriptor,
       String friendly_name, boolean system, boolean force_shared_lib) {
     String friendly_name_utf8 = friendly_name;
@@ -274,6 +314,45 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
     // }
     // return ShadowArscAssetManager9.NATIVE_APK_ASSETS_REGISTRY.getNativeObjectId(apk_assets);
   }
+
+  // BEGIN-INTERNAL
+  // static jlong NativeLoadFromFd(JNIEnv* env, jclass /*clazz*/, jobject file_descriptor,
+//                               jstring friendly_name, jboolean system, jboolean force_shared_lib,
+//                               jboolean for_loader) {
+  @Implementation(minSdk = Build.VERSION_CODES.R)
+  protected static long nativeLoadFromFd(FileDescriptor file_descriptor,
+          String friendly_name, boolean system, boolean force_shared_lib, boolean for_loader) {
+    String friendly_name_utf8 = friendly_name;
+    if (friendly_name_utf8 == null) {
+      return 0;
+    }
+
+    throw new UnsupportedOperationException();
+    // ATRACE_NAME(String.format("LoadApkAssetsFd(%s)", friendly_name_utf8));
+    //
+    // int fd = jniGetFDFromFileDescriptor(env, file_descriptor);
+    // if (fd < 0) {
+    //   throw new IllegalArgumentException("Bad FileDescriptor");
+    // }
+    //
+    // unique_fd dup_fd(.dup(fd));
+    // if (dup_fd < 0) {
+    //   throw new IOException(errno);
+    //   return 0;
+    // }
+    //
+    // ApkAssets apk_assets = ApkAssets.LoadFromFd(std.move(dup_fd),
+    //                                                                     friendly_name_utf8,
+    //                                                                     system, force_shared_lib);
+    // if (apk_assets == null) {
+    //   String error_msg = String.format("Failed to load asset path %s from fd %d",
+    //                                              friendly_name_utf8, dup_fd.get());
+    //   throw new IOException(error_msg);
+    //   return 0;
+    // }
+    // return ShadowArscAssetManager9.NATIVE_APK_ASSETS_REGISTRY.getNativeObjectId(apk_assets);
+  }
+  // END-INTERNAL
 
   // static jstring NativeGetAssetPath(JNIEnv* env, jclass /*clazz*/, jlong ptr) {
   @Implementation
