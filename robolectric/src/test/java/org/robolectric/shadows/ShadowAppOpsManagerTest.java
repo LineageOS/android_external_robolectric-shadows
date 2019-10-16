@@ -104,7 +104,7 @@ public class ShadowAppOpsManagerTest {
   @Test
   @Config(minSdk = VERSION_CODES.R)
   public void noModeSet_atLeastR_noteProxyOpNoThrow_shouldReturnModeAllowed() {
-    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null))
+    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null, null))
             .isEqualTo(MODE_ALLOWED);
   }
 
@@ -112,17 +112,17 @@ public class ShadowAppOpsManagerTest {
   @Config(minSdk = VERSION_CODES.R)
   public void setMode_withModeDefault_atLeastR_noteProxyOpNoThrow_shouldReturnModeDefault() {
     appOps.setMode(OP_GPS, Binder.getCallingUid(), PACKAGE_NAME1, MODE_DEFAULT);
-    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null))
+    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null, null))
             .isEqualTo(MODE_DEFAULT);
   }
 
   @Test
   @Config(minSdk = VERSION_CODES.R)
   public void setMode_noteProxyOpNoThrow_atLeastR() {
-    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null))
+    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null, null))
             .isEqualTo(MODE_ALLOWED);
     appOps.setMode(OP_GPS, Binder.getCallingUid(), PACKAGE_NAME1, MODE_ERRORED);
-    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null))
+    assertThat(appOps.noteProxyOpNoThrow(OPSTR_GPS, PACKAGE_NAME1, UID_1, null, null))
             .isEqualTo(MODE_ERRORED);
   }
 
@@ -152,11 +152,11 @@ public class ShadowAppOpsManagerTest {
   @Test
   @Config(minSdk = VERSION_CODES.R)
   public void noteOp_atLeastR() {
-    assertThat(appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null)).isEqualTo(MODE_ALLOWED);
+    assertThat(appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null, null)).isEqualTo(MODE_ALLOWED);
     // Use same op more than once
-    assertThat(appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null)).isEqualTo(MODE_ALLOWED);
+    assertThat(appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null, null)).isEqualTo(MODE_ALLOWED);
 
-    assertThat(appOps.noteOp(OPSTR_SEND_SMS, UID_1, PACKAGE_NAME1, null)).isEqualTo(MODE_ALLOWED);
+    assertThat(appOps.noteOp(OPSTR_SEND_SMS, UID_1, PACKAGE_NAME1, null, null)).isEqualTo(MODE_ALLOWED);
   }
 
   @Test
@@ -191,8 +191,8 @@ public class ShadowAppOpsManagerTest {
   @Test
   @Config(minSdk = VERSION_CODES.R)
   public void getOpsForPackage_hasOps_atLeastR() {
-    appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null);
-    appOps.noteOp(OPSTR_SEND_SMS, UID_1, PACKAGE_NAME1, null);
+    appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null, null);
+    appOps.noteOp(OPSTR_SEND_SMS, UID_1, PACKAGE_NAME1, null, null);
 
     // PACKAGE_NAME2 has ops.
     List<PackageOps> results = appOps.getOpsForPackage(UID_1, PACKAGE_NAME1);
@@ -224,11 +224,11 @@ public class ShadowAppOpsManagerTest {
     List<PackageOps> results = appOps.getOpsForPackage(UID_1, PACKAGE_NAME1, OPSTR_GPS);
     assertOps(results);
 
-    appOps.noteOp(OPSTR_SEND_SMS, UID_1, PACKAGE_NAME1, null);
+    appOps.noteOp(OPSTR_SEND_SMS, UID_1, PACKAGE_NAME1, null, null);
     results = appOps.getOpsForPackage(UID_1, PACKAGE_NAME1, OPSTR_GPS);
     assertOps(results);
 
-    appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null);
+    appOps.noteOp(OPSTR_GPS, UID_1, PACKAGE_NAME1, null, null);
     results = appOps.getOpsForPackage(UID_1, PACKAGE_NAME1, OPSTR_GPS);
     assertOps(results, OP_GPS);
   }
