@@ -16,6 +16,7 @@ import android.annotation.SystemApi;
 import android.app.AppOpsManager;
 import android.app.AppOpsManager.OnOpChangedListener;
 import android.app.AppOpsManager.OpEntry;
+import android.app.AppOpsManager.OpFeatureEntry;
 import android.app.AppOpsManager.PackageOps;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -24,6 +25,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.util.LongSparseArray;
 import android.util.LongSparseLongArray;
+import android.util.Pair;
 import com.android.internal.app.IAppOpsService;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -179,7 +181,10 @@ public class ShadowAppOpsManager {
   @Implementation(minSdk = R)
   @HiddenApi
   protected int noteProxyOpNoThrow(int op, String proxiedPackageName, int proxiedUid,
-          String message) {
+          String featureId, String message) {
+    if (featureId != null) {
+      throw new RuntimeException("non null featureIds are not supported by Robolectric yet");
+    }
     mStoredOps.put(getInternalKey(proxiedUid, proxiedPackageName), op);
     return checkOpNoThrow(op, proxiedUid, proxiedPackageName);
   }
@@ -292,8 +297,25 @@ public class ShadowAppOpsManager {
     final LongSparseArray<String> proxyPackages = new LongSparseArray<>();
     proxyPackages.put(key, PROXY_PACKAGE);
 
-    return new OpEntry(op, false, AppOpsManager.MODE_ALLOWED, accessTimes,
-        durations, rejectTimes, proxyUids, proxyPackages);
+    if (RuntimeEnvironment.getApiLevel() <= Build.VERSION_CODES.Q) {
+      return ReflectionHelpers.callConstructor(
+              OpEntry.class,
+              ClassParameter.from(int.class, op),
+              ClassParameter.from(boolean.class, false),
+              ClassParameter.from(int.class, AppOpsManager.MODE_ALLOWED),
+              ClassParameter.from(LongSparseLongArray.class, accessTimes),
+              ClassParameter.from(LongSparseLongArray.class, durations),
+              ClassParameter.from(LongSparseLongArray.class, rejectTimes),
+              ClassParameter.from(LongSparseLongArray.class, proxyUids),
+              ClassParameter.from(LongSparseArray.class, proxyPackages));
+    }
+
+    final LongSparseArray<String> proxyFeatureIds = new LongSparseArray<>();
+    proxyFeatureIds.put(key, null);
+
+    return new OpEntry(op, AppOpsManager.MODE_ALLOWED, new Pair[]{new Pair(null,
+            new OpFeatureEntry.Builder(false, accessTimes, rejectTimes, durations, proxyUids,
+                    proxyPackages, proxyFeatureIds))});
     // END-INTERNAL
   }
 
