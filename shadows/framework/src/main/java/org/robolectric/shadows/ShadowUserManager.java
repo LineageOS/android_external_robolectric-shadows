@@ -6,6 +6,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.N_MR1;
+import static android.os.Build.VERSION_CODES.R;
 import static org.robolectric.shadow.api.Shadow.directlyOn;
 
 import android.Manifest.permission;
@@ -176,6 +177,13 @@ public class ShadowUserManager {
     Bundle bundle = userRestrictions.get(userHandle.getIdentifier());
     return bundle != null && bundle.getBoolean(restrictionKey);
   }
+
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = R)
+  protected boolean hasUserRestrictionForUser(String restrictionKey, UserHandle userHandle) {
+    return hasUserRestriction(restrictionKey, userHandle); 
+  }
+  // END-INTERNAL
 
   public void setUserRestriction(UserHandle userHandle, String restrictionKey, boolean value) {
     Bundle bundle = getUserRestrictionsForUser(userHandle);
