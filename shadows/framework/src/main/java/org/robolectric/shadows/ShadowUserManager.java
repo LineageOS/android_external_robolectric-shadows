@@ -161,6 +161,11 @@ public class ShadowUserManager {
     return managedProfile;
   }
 
+  @Implementation(minSdk = R)
+  protected boolean isProfile() {
+    return isManagedProfile();
+  }
+
   public void enforcePermissionChecks(boolean enforcePermissions) {
     this.enforcePermissions = enforcePermissions;
   }
