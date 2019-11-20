@@ -18,7 +18,10 @@ $(my_coverage_output): PRIVATE_COVERAGE_REPORT_JAR := $(my_coverage_report_jar)
 $(my_coverage_output): PRIVATE_REPORT_DIR := $(my_report_dir)
 
 # Generate the coverage report.
+# Touches the output file and continues on failure to avoid breaking the build when a test fails to
+# generate coverage data.
 $(my_coverage_output): $(my_collect_file) $(my_coverage_report_jar)
+	$(hide) rm -f $@
 	$(hide) rm -rf $(PRIVATE_REPORT_DIR)
 	$(hide) mkdir -p $(PRIVATE_REPORT_DIR)
 	$(hide) $(JAVA) \
@@ -29,7 +32,8 @@ $(my_coverage_output): $(my_collect_file) $(my_coverage_report_jar)
 			--name $(PRIVATE_MODULE) \
 			--report-dir $(PRIVATE_REPORT_DIR)/ \
 			$(PRIVATE_SRC_ARGS) \
-			>$(PRIVATE_REPORT_DIR)/reporter.txt 2>&1
+			>$(PRIVATE_REPORT_DIR)/reporter.txt 2>&1 \
+		|| touch $@
 	@echo "Coverage report: file://"$(realpath $(PRIVATE_REPORT_DIR))"/index.html"
 
 
