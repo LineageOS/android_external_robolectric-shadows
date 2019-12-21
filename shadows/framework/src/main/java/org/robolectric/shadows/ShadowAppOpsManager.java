@@ -310,12 +310,15 @@ public class ShadowAppOpsManager {
               ClassParameter.from(LongSparseArray.class, proxyPackages));
     }
 
-    final LongSparseArray<String> proxyFeatureIds = new LongSparseArray<>();
-    proxyFeatureIds.put(key, null);
+    LongSparseArray<AppOpsManager.NoteOpEvent> accessEvents = new LongSparseArray<>();
+    LongSparseArray<AppOpsManager.NoteOpEvent> rejectEvents = new LongSparseArray<>();
 
-    return new OpEntry(op, AppOpsManager.MODE_ALLOWED, new Pair[]{new Pair(null,
-            new OpFeatureEntry.Builder(false, accessTimes, rejectTimes, durations, proxyUids,
-                    proxyPackages, proxyFeatureIds))});
+    accessEvents.put(key, new AppOpsManager.NoteOpEvent(OP_TIME, DURATION,
+            new AppOpsManager.OpEventProxyInfo(PROXY_UID, PROXY_PACKAGE, null)));
+    rejectEvents.put(key, new AppOpsManager.NoteOpEvent(REJECT_TIME, -1, null));
+
+    return new OpEntry(op, AppOpsManager.MODE_ALLOWED, Collections.singletonMap(null,
+            new OpFeatureEntry(op, false, accessEvents, rejectEvents)));
     // END-INTERNAL
   }
 
