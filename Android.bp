@@ -31,6 +31,7 @@ java_library {
         "services.accessibility",
         "telephony-common",
         "updatable-media",
+        "framework-tethering",
 
         "robolectric_tzdata",
         "robolectric_framework_res",

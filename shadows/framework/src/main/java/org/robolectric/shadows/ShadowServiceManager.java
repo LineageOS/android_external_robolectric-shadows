@@ -9,6 +9,7 @@ import static android.os.Build.VERSION_CODES.N_MR1;
 import static android.os.Build.VERSION_CODES.O;
 import static android.os.Build.VERSION_CODES.P;
 import static android.os.Build.VERSION_CODES.Q;
+import static android.os.Build.VERSION_CODES.R;
 
 import android.accounts.IAccountManager;
 import android.app.IAlarmManager;
@@ -35,6 +36,7 @@ import android.media.IMediaRouterService;
 import android.media.session.ISessionManager;
 import android.net.IConnectivityManager;
 import android.net.INetworkScoreService;
+import android.net.ITetheringConnector;
 import android.net.nsd.INsdManager;
 import android.net.wifi.IWifiManager;
 import android.net.wifi.p2p.IWifiP2pManager;
@@ -194,6 +196,10 @@ public class ShadowServiceManager {
           "android.hardware.display.ColorDisplayManager"));
       map.put(Context.ROLE_SERVICE,
               createBinder(IRoleManager.class, "android.app.role.IRoleManager"));
+    }
+    if (RuntimeEnvironment.getApiLevel() >= R) {
+      map.put(Context.TETHERING_SERVICE,
+              createBinder(ITetheringConnector.class, "android.net.ITetheringConnector"));
     }
     // END-INTERNAL
     SERVICES = Collections.unmodifiableMap(map);
