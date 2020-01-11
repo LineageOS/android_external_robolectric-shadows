@@ -20,10 +20,7 @@ java_library {
         "core-icu4j",
         "core-libart",
         "ext",
-        // `framework-wifi` is before `framework` so that Wifi @hide APIs in `framework-wifi`
-        // are resolved before Wifi @SystemApi stubs in `framework`.
-        "framework-wifi",
-        "framework",
+        "framework-all",
         "icu4j-icudata-jarjar",
         "icu4j-icutzdata-jarjar",
         "ims-common",
@@ -33,8 +30,6 @@ java_library {
         "services",
         "services.accessibility",
         "telephony-common",
-        "updatable-media",
-        "framework-tethering",
 
         "robolectric_tzdata",
         "robolectric_framework_res",
