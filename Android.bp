@@ -20,7 +20,7 @@ java_library {
         "core-icu4j",
         "core-libart",
         "ext",
-        "framework",
+        "framework-all",
         "icu4j-icudata-jarjar",
         "icu4j-icutzdata-jarjar",
         "ims-common",
@@ -30,7 +30,6 @@ java_library {
         "services",
         "services.accessibility",
         "telephony-common",
-        "updatable-media",
 
         "robolectric_tzdata",
         "robolectric_framework_res",
