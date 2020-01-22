@@ -51,7 +51,7 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
     my_timeout := $(if $(LOCAL_ROBOTEST_TIMEOUT),$(LOCAL_ROBOTEST_TIMEOUT),600)
     # Command to filter the list of test classes.
     # If not specified, defaults to including all the tests.
-    my_test_filter_command := $(if $(ROBOTEST_FILTER),grep -E "$(ROBOTEST_FILTER)",cat)
+    my_test_filter_command := $(if $(ROBOTEST_FILTER),grep -E "$(ROBOTEST_FILTER)",)
 
     # The directory containing the sources.
     my_instrument_makefile_dir := $(dir $(ALL_MODULES.$(LOCAL_TEST_PACKAGE).MAKEFILE))
@@ -90,8 +90,10 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
         LOCAL_ROBOTEST_FILES := $(call find-files-in-subdirs,$(LOCAL_PATH)/src,*Test.java,.)
     endif
     # Convert the paths into package names by removing .java extension and replacing "/" with "."
-    my_tests := $(subst /,.,$(basename $(LOCAL_ROBOTEST_FILES)))
-    my_tests := $(sort $(shell echo '$(my_tests)' | tr ' ' '\n' | $(my_test_filter_command)))
+    my_tests := $(sort $(subst /,.,$(basename $(LOCAL_ROBOTEST_FILES))))
+    ifdef my_test_filter_command
+        my_tests := $(sort $(shell echo '$(my_tests)' | tr ' ' '\n' | $(my_test_filter_command)))
+    endif
     # The source jars containing the tests.
     my_srcs_jars := \
         $(foreach lib, \
