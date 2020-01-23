@@ -166,6 +166,11 @@ public class ShadowUserManager {
     return isManagedProfile();
   }
 
+  @Implementation(minSdk = R)
+  public boolean hasBadge(int userId) {
+    return isProfile();
+  }
+
   public void enforcePermissionChecks(boolean enforcePermissions) {
     this.enforcePermissions = enforcePermissions;
   }
