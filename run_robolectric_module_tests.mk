@@ -13,12 +13,14 @@ test_source_files := $(call find-files-in-subdirs, $(test_source_directory), "*T
 test_source_files := $(filter-out org/robolectric/shadows/SQLiteCursorTest.java, $(test_source_files))
 
 # Build the command that honors the test class filter, if any.
-test_filter_command := $(if $(ROBOTEST_FILTER),grep -E "$(ROBOTEST_FILTER)",cat)
+test_filter_command := $(if $(ROBOTEST_FILTER),grep -E "$(ROBOTEST_FILTER)",)
 
 # Convert the test source file paths into package names by removing ".java" extension and replacing "/" with "."
-test_class_names := $(subst /,., $(basename $(test_source_files)))
+test_class_names := $(sort $(subst /,., $(basename $(test_source_files))))
 # Remove whitespace and sort the tests in alphabetical order.
-test_class_names := $(sort $(shell echo '$(test_class_names)' | tr ' ' '\n' | $(test_filter_command)))
+ifdef test_filter_command
+  test_class_names := $(sort $(shell echo '$(test_class_names)' | tr ' ' '\n' | $(test_filter_command)))
+endif
 
 include $(BUILD_SYSTEM)/base_rules.mk
 

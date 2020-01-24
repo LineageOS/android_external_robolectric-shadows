@@ -161,10 +161,24 @@ public class ShadowUserManager {
     return managedProfile;
   }
 
+  // BEGIN-INTERNAL
   @Implementation(minSdk = R)
   protected boolean isProfile() {
     return isManagedProfile();
   }
+
+  /**
+   * Compared to real Android, userId is not used, instead
+   * managedProfile determines if user has badge.
+   *
+   * @param userId ignored, uses managedProfile field
+   * @return true if managedProfile field is true
+   */
+  @Implementation(minSdk = R)
+  protected boolean hasBadge(int userId) {
+    return isProfile();
+  }
+  // END-INTERNAL
 
   public void enforcePermissionChecks(boolean enforcePermissions) {
     this.enforcePermissions = enforcePermissions;
@@ -186,7 +200,7 @@ public class ShadowUserManager {
   // BEGIN-INTERNAL
   @Implementation(minSdk = R)
   protected boolean hasUserRestrictionForUser(String restrictionKey, UserHandle userHandle) {
-    return hasUserRestriction(restrictionKey, userHandle); 
+    return hasUserRestriction(restrictionKey, userHandle);
   }
   // END-INTERNAL
 
