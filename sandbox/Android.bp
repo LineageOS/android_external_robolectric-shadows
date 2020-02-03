@@ -41,4 +41,5 @@ java_test_host {
         "asm-6.0",
         "jsr305",
     ],
+    test_suites: ["general-tests"],
 }
