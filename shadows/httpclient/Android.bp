@@ -51,9 +51,8 @@ java_test_host {
         "robolectric-ant-1.8.0",
         "asm-6.0",
         "jsr305",
-    ],
-    libs: [
         "robolectric-host-android_all",
         "robolectric-host-org_apache_http_legacy",
     ],
+    test_suites: ["general-tests"],
 }
