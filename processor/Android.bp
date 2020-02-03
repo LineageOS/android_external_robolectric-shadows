@@ -53,6 +53,8 @@ java_test_host {
         "jsr305",
     ],
 
+    test_suites: ["general-tests"],
+
     // Disable annotation processing while compiling tests to avoid executing RobolectricProcessor.
     javacflags: ["-proc:none"],
 }
