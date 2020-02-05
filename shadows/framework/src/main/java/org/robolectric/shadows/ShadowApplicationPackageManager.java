@@ -1219,6 +1219,13 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
     throw new NameNotFoundException(packageName);
   }
 
+  @Implementation
+  protected ApplicationInfo getApplicationInfoAsUser(
+          String packageName, int flags, UserHandle userId) throws NameNotFoundException {
+    // Currently does not use the user ID.
+    return getApplicationInfo(packageName, flags);
+  }
+
   /**
    * Returns all the values added via {@link
    * ShadowPackageManager#addSystemSharedLibraryName(String)}.
