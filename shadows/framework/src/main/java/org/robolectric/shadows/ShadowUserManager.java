@@ -61,6 +61,7 @@ public class ShadowUserManager {
   private Map<Integer, UserState> userState = new HashMap<>();
   private Map<Integer, UserInfo> userInfoMap = new HashMap<>();
   private Map<Integer, List<UserInfo>> profiles = new HashMap<>();
+  private Map<Integer, Integer> profileToParent = new HashMap<>();
 
   private Context context;
   private boolean enforcePermissions;
@@ -119,6 +120,12 @@ public class ShadowUserManager {
     if (profiles.containsKey(userHandle)) {
       return ImmutableList.copyOf(profiles.get(userHandle));
     }
+
+    if (profileToParent.containsKey(userHandle)
+            && profiles.containsKey(profileToParent.get(userHandle))) {
+      return ImmutableList.copyOf(profiles.get(profileToParent.get(userHandle)));
+    }
+
     return directlyOn(
             realObject, UserManager.class, "getProfiles", ClassParameter.from(int.class, userHandle));
   }
@@ -128,6 +135,18 @@ public class ShadowUserManager {
           int userHandle, int profileUserHandle, String profileName, int profileFlags) {
     profiles.putIfAbsent(userHandle, new ArrayList<>());
     profiles.get(userHandle).add(new UserInfo(profileUserHandle, profileName, profileFlags));
+    profileToParent.put(profileUserHandle, userHandle);
+  }
+
+  /**
+   * If this profile has been added using {@link #addProfile}, return its parent.
+   */
+  @Implementation(minSdk = LOLLIPOP)
+  protected UserInfo getProfileParent(int userHandle) {
+    if (!profileToParent.containsKey(userHandle)) {
+      return null;
+    }
+    return userInfoMap.get(profileToParent.get(userHandle));
   }
 
   @Implementation(minSdk = N)
@@ -517,6 +536,7 @@ public class ShadowUserManager {
         id == UserHandle.USER_SYSTEM ? Process.myUserHandle() : new UserHandle(id);
     addUserProfile(userHandle);
     setSerialNumberForUser(userHandle, (long) id);
+    profiles.putIfAbsent(id, new ArrayList<>());
     userInfoMap.put(id, new UserInfo(id, name, flags));
     userPidMap.put(
         id,
