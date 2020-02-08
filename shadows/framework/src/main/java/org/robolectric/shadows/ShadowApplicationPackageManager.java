@@ -1341,7 +1341,11 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
 
   @Implementation(minSdk = N)
   protected List<PackageInfo> getInstalledPackagesAsUser(int flags, int userId) {
-    return null;
+    List<PackageInfo> packages = new ArrayList<>();
+    for (String packageName : packagesForUserId.getOrDefault(userId, new ArrayList<>())) {
+      packages.add(packageInfos.get(packageName));
+    }
+    return packages;
   }
 
   @Implementation(minSdk = JELLY_BEAN_MR2)
