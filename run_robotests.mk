@@ -132,7 +132,7 @@ ifneq ($(DISABLE_ROBO_RUN_TESTS),true)
       $(android_all_lib_path)/android-all-8.0.0_r4-robolectric-r1.jar:$(my_robolectric_path)/android-all-8.0.0_r4-robolectric-r1.jar \
       $(android_all_lib_path)/android-all-8.1.0-robolectric-4611349.jar:$(my_robolectric_path)/android-all-8.1.0-robolectric-4611349.jar \
       $(android_all_lib_path)/android-all-9-robolectric-4913185-2.jar:$(my_robolectric_path)/android-all-9-robolectric-4913185-2.jar \
-      $(android_all_lib_path)/android-all-9plus-robolectric-5616371.jar:$(my_robolectric_path)/android-all-9plus-robolectric-5616371.jar \
+      $(android_all_lib_path)/android-all-10-robolectric-5803371.jar:$(my_robolectric_path)/android-all-10-robolectric-5803371.jar \
       $(local_android_all_source_jar):$(my_robolectric_path)/android-all-R-robolectric-r0.jar
     copy_android_all_jars := $(call copy-many-files, $(copy_android_all_jar_pairs))
 
