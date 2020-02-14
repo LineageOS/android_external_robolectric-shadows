@@ -23,10 +23,12 @@ import static android.os.Build.VERSION_CODES.Q;
 import static android.os.Build.VERSION_CODES.R;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import android.Manifest;
 import android.Manifest.permission;
 import android.annotation.NonNull;
 import android.annotation.RequiresPermission;
 import android.annotation.SystemApi;
+import android.app.AppOpsManager;
 import android.app.AppOpsManager.Mode;
 import android.content.ComponentName;
 import android.content.Context;
@@ -43,6 +45,7 @@ import android.text.TextUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +54,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nullable;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
@@ -61,13 +66,15 @@ import org.robolectric.annotation.Resetter;
 public class ShadowCrossProfileApps {
 
   // BEGIN-INTERNAL
+  private final static String INTERACT_ACROSS_PROFILES_APPOP = AppOpsManager.permissionToOp(
+          Manifest.permission.INTERACT_ACROSS_PROFILES);
   private static final Set<String> configurableInteractAcrossProfilePackages = new HashSet<>();
   // END-INTERNAL
 
   private final Set<UserHandle> targetUserProfiles = new LinkedHashSet<>();
   private final List<StartedMainActivity> startedMainActivities = new ArrayList<>();
   private final List<StartedActivity> startedActivities =
-      Collections.synchronizedList(new ArrayList<>());
+          Collections.synchronizedList(new ArrayList<>());
   private final Map<String, Integer> packageNameAppOpModes = new HashMap<>();
 
   private Context context;
@@ -219,19 +226,19 @@ public class ShadowCrossProfileApps {
   private void verifyCanAccessUser(UserHandle userHandle) {
     if (!targetUserProfiles.contains(userHandle)) {
       throw new SecurityException(
-          "Not allowed to access "
-              + userHandle
-              + " (did you forget to call addTargetUserProfile?)");
+              "Not allowed to access "
+                      + userHandle
+                      + " (did you forget to call addTargetUserProfile?)");
     }
   }
 
   private void verifyHasInteractAcrossProfilesPermission() {
     if (context.checkSelfPermission(permission.INTERACT_ACROSS_PROFILES)
-        != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED) {
       throw new SecurityException(
-          "Attempt to launch activity without required "
-              + permission.INTERACT_ACROSS_PROFILES
-              + " permission");
+              "Attempt to launch activity without required "
+                      + permission.INTERACT_ACROSS_PROFILES
+                      + " permission");
     }
   }
 
@@ -247,37 +254,37 @@ public class ShadowCrossProfileApps {
     Intent launchIntent = new Intent();
     if (requireMainActivity) {
       launchIntent
-          .setAction(Intent.ACTION_MAIN)
-          .addCategory(Intent.CATEGORY_LAUNCHER)
-          .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
-          .setPackage(component.getPackageName());
+              .setAction(Intent.ACTION_MAIN)
+              .addCategory(Intent.CATEGORY_LAUNCHER)
+              .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+              .setPackage(component.getPackageName());
     } else {
       launchIntent.setComponent(component);
     }
 
     boolean existsMatchingActivity =
-        Iterables.any(
-            packageManager.queryIntentActivities(
-                launchIntent, MATCH_DIRECT_BOOT_AWARE | MATCH_DIRECT_BOOT_UNAWARE),
-            resolveInfo -> {
-              ActivityInfo activityInfo = resolveInfo.activityInfo;
-              return TextUtils.equals(activityInfo.packageName, component.getPackageName())
-                  && TextUtils.equals(activityInfo.name, component.getClassName())
-                  && activityInfo.exported;
-            });
+            Iterables.any(
+                    packageManager.queryIntentActivities(
+                            launchIntent, MATCH_DIRECT_BOOT_AWARE | MATCH_DIRECT_BOOT_UNAWARE),
+                    resolveInfo -> {
+                      ActivityInfo activityInfo = resolveInfo.activityInfo;
+                      return TextUtils.equals(activityInfo.packageName, component.getPackageName())
+                              && TextUtils.equals(activityInfo.name, component.getClassName())
+                              && activityInfo.exported;
+                    });
     if (!existsMatchingActivity) {
       throw new SecurityException(
-          "Attempt to launch activity without "
-              + " category Intent.CATEGORY_LAUNCHER or activity is not exported"
-              + component);
+              "Attempt to launch activity without "
+                      + " category Intent.CATEGORY_LAUNCHER or activity is not exported"
+                      + component);
     }
   }
 
   // BEGIN-INTERNAL
   @Implementation(minSdk = R)
   @RequiresPermission(
-      allOf={android.Manifest.permission.MANAGE_APP_OPS_MODES,
-          android.Manifest.permission.INTERACT_ACROSS_USERS})
+          allOf={android.Manifest.permission.MANAGE_APP_OPS_MODES,
+                  android.Manifest.permission.INTERACT_ACROSS_USERS})
   protected void setInteractAcrossProfilesAppOp(String packageName, @Mode int newMode) {
     packageNameAppOpModes.put(packageName, newMode);
   }
@@ -293,6 +300,24 @@ public class ShadowCrossProfileApps {
 
   public void addCrossProfilePackage(String packageName){
     configurableInteractAcrossProfilePackages.add(packageName);
+  }
+
+  @Implementation(minSdk = R)
+  protected void resetInteractAcrossProfilesAppOps(
+          @NonNull Collection<String> previousCrossProfilePackages,
+          @NonNull Set<String> newCrossProfilePackages) {
+
+    final List<String> unsetCrossProfilePackages =
+            previousCrossProfilePackages.stream()
+                    .filter(packageName -> !newCrossProfilePackages.contains(packageName))
+                    .collect(Collectors.toList());
+
+    for (String packageName : unsetCrossProfilePackages) {
+      if (!canConfigureInteractAcrossProfiles(packageName)) {
+        setInteractAcrossProfilesAppOp(packageName,
+                AppOpsManager.opToDefaultMode(INTERACT_ACROSS_PROFILES_APPOP));
+      }
+    }
   }
 
   @Implementation
@@ -341,7 +366,7 @@ public class ShadowCrossProfileApps {
       }
       StartedMainActivity that = (StartedMainActivity) o;
       return Objects.equals(componentName, that.componentName)
-          && Objects.equals(userHandle, that.userHandle);
+              && Objects.equals(userHandle, that.userHandle);
     }
 
     @Override
@@ -382,7 +407,7 @@ public class ShadowCrossProfileApps {
       }
       StartedActivity that = (StartedActivity) o;
       return Objects.equals(componentName, that.componentName)
-          && Objects.equals(userHandle, that.userHandle);
+              && Objects.equals(userHandle, that.userHandle);
     }
 
     @Override
