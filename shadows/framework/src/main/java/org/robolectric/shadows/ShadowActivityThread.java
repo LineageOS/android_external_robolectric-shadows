@@ -7,6 +7,7 @@ import android.os.RemoteException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Implementation;
@@ -51,6 +52,8 @@ public class ShadowActivityThread {
               return null;
             } else if (method.getName().equals("getPackageInstaller")) {
               return null;
+            } else if (method.getName().equals("getSplitPermissions")) {
+              return Collections.emptyList();
             }
             throw new UnsupportedOperationException("sorry, not supporting " + method + " yet!");
           }
