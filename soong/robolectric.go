@@ -77,6 +77,9 @@ func (b *buildProps) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 		"ro.product.cpu.abilist=armeabi-v7a",
 		"ro.product.cpu.abilist32=armeabi-v7a,armeabi",
 		"ro.product.cpu.abilist64=armeabi-v7a,armeabi",
+		"",
+		"# temp fix for robolectric freezing issue b/150011638",
+		"persist.debug.new_insets=0",
 	}
 
 	b.output = android.PathForModuleGen(ctx, "build.prop")
