@@ -47,6 +47,7 @@ import android.os.IBatteryPropertiesRegistrar;
 import android.os.IBinder;
 import android.os.IInterface;
 import android.os.IPowerManager;
+import android.os.IThermalService;
 import android.os.IUserManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -204,6 +205,8 @@ public class ShadowServiceManager {
     if (RuntimeEnvironment.getApiLevel() >= R) {
       map.put(Context.TETHERING_SERVICE,
               createBinder(ITetheringConnector.class, "android.net.ITetheringConnector"));
+      map.put(Context.THERMAL_SERVICE,
+              createBinder(IThermalService.class, "android.os.IThermalService"));
     }
     // END-INTERNAL
     SERVICES = Collections.unmodifiableMap(map);
