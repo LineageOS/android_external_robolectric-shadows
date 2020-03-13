@@ -14,9 +14,9 @@ import android.annotation.Nullable;
 import android.annotation.RequiresPermission;
 import android.annotation.SystemApi;
 import android.app.AppOpsManager;
+import android.app.AppOpsManager.AttributedOpEntry;
 import android.app.AppOpsManager.OnOpChangedListener;
 import android.app.AppOpsManager.OpEntry;
-import android.app.AppOpsManager.OpFeatureEntry;
 import android.app.AppOpsManager.PackageOps;
 import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -25,7 +25,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.util.LongSparseArray;
 import android.util.LongSparseLongArray;
-import android.util.Pair;
+
 import com.android.internal.app.IAppOpsService;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -318,7 +318,7 @@ public class ShadowAppOpsManager {
     rejectEvents.put(key, new AppOpsManager.NoteOpEvent(REJECT_TIME, -1, null));
 
     return new OpEntry(op, AppOpsManager.MODE_ALLOWED, Collections.singletonMap(null,
-            new OpFeatureEntry(op, false, accessEvents, rejectEvents)));
+            new AttributedOpEntry(op, false, accessEvents, rejectEvents)));
     // END-INTERNAL
   }
 
