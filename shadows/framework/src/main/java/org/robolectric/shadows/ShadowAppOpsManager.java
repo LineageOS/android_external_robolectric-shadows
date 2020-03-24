@@ -132,6 +132,24 @@ public class ShadowAppOpsManager {
   }
   // END-INTERNAL
 
+  /**
+   * Like {@link #unsafeCheckOpNoThrow(String, int, String)} but returns the <em>raw</em> mode
+   * associated with the op. Does not throw a security exception, does not translate {@link
+   * AppOpsManager#MODE_FOREGROUND}.
+   */
+  @Implementation(minSdk = Q)
+  protected int unsafeCheckOpRawNoThrow(String op, int uid, String packageName) {
+    return unsafeCheckOpRawNoThrow(AppOpsManager.strOpToOp(op), uid, packageName);
+  }
+
+  private int unsafeCheckOpRawNoThrow(int op, int uid, String packageName) {
+    Integer mode = appModeMap.get(getOpMapKey(uid, packageName, op));
+    if (mode == null) {
+      return AppOpsManager.MODE_ALLOWED;
+    }
+    return mode;
+  }
+
   @Implementation(minSdk = P)
   @Deprecated // renamed to unsafeCheckOpNoThrow
   protected int checkOpNoThrow(String op, int uid, String packageName) {
