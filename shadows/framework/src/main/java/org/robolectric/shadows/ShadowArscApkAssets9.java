@@ -8,6 +8,7 @@ import static org.robolectric.shadow.api.Shadow.directlyOn;
 import android.annotation.NonNull;
 import android.content.res.ApkAssets;
 import android.content.res.AssetManager;
+import android.content.res.loader.AssetsProvider;
 import android.os.Build;
 
 import org.robolectric.RuntimeEnvironment;
@@ -53,6 +54,12 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
 // using ::android::base::unique_fd;
 //
 // namespace android {
+  // BEGIN-INTERNAL
+  private static final int PROPERTY_SYSTEM = 1 << 0;
+  private static final int PROPERTY_DYNAMIC = 1 << 1;
+  private static final int PROPERTY_LOADER = 1 << 2;
+  private static final int PROPERTY_OVERLAY = 1 << 3;
+  // END-INTERNAL
 
   private static final String FRAMEWORK_APK_PATH =
       ReflectionHelpers.getStaticField(AssetManager.class, "FRAMEWORK_APK_PATH");
@@ -169,6 +176,25 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
             ClassParameter.from(boolean.class, system)));
   }
 
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = Build.VERSION_CODES.R)
+  protected static ApkAssets loadFromPath(String path, int flags)
+          throws IOException {
+    boolean system = (flags & PROPERTY_SYSTEM) == PROPERTY_SYSTEM;
+
+    if (FRAMEWORK_APK_PATH.equals(path)) {
+      path = RuntimeEnvironment.getAndroidFrameworkJarPath();
+    }
+
+    String finalPath = path;
+    return getFromCacheOrLoad(
+            new Key(null, path, system, false, false),
+            () -> directlyOn(ApkAssets.class, "loadFromPath",
+                    ClassParameter.from(String.class, finalPath),
+                    ClassParameter.from(int.class, flags)));
+  }
+  // END-INTERNAL
+
   @Implementation
   protected static @NonNull ApkAssets loadFromPath(@NonNull String path, boolean system,
       boolean forceSharedLibrary) throws IOException {
@@ -180,18 +206,50 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
             ClassParameter.from(boolean.class, forceSharedLibrary)));
   }
 
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = Build.VERSION_CODES.R)
+  protected static @NonNull ApkAssets loadFromPath(@NonNull String path, int flags,
+          AssetsProvider assets) throws IOException {
+    boolean system = (flags & PROPERTY_SYSTEM) == PROPERTY_SYSTEM;
+    boolean forceSharedLibrary = (flags & PROPERTY_DYNAMIC) == PROPERTY_DYNAMIC;
+    return getFromCacheOrLoad(
+            new Key(null, path, system, forceSharedLibrary, false),
+            () -> directlyOn(ApkAssets.class, "loadFromPath",
+                    ClassParameter.from(String.class, path),
+                    ClassParameter.from(int.class, flags),
+                    ClassParameter.from(AssetsProvider.class, assets)));
+  }
+  // END-INTERNAL
+
   @Implementation
   protected static ApkAssets loadFromFd(FileDescriptor fd,
       String friendlyName, boolean system, boolean forceSharedLibrary)
       throws IOException {
     return getFromCacheOrLoad(
         new Key(fd, friendlyName, system, forceSharedLibrary, false),
-        () -> directlyOn(ApkAssets.class, "loadFromPath",
+        () -> directlyOn(ApkAssets.class, "loadFromFd",
             ClassParameter.from(FileDescriptor.class, fd),
             ClassParameter.from(String.class, friendlyName),
             ClassParameter.from(boolean.class, system),
             ClassParameter.from(boolean.class, forceSharedLibrary)));
   }
+
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = Build.VERSION_CODES.R)
+  protected static ApkAssets loadFromFd(FileDescriptor fd,
+          String friendlyName, int flags, AssetsProvider assets)
+          throws IOException {
+    boolean system = (flags & PROPERTY_SYSTEM) == PROPERTY_SYSTEM;
+    boolean forceSharedLibrary = (flags & PROPERTY_DYNAMIC) == PROPERTY_DYNAMIC;
+    return getFromCacheOrLoad(
+            new Key(fd, friendlyName, system, forceSharedLibrary, false),
+            () -> directlyOn(ApkAssets.class, "loadFromFd",
+                    ClassParameter.from(FileDescriptor.class, fd),
+                    ClassParameter.from(String.class, friendlyName),
+                    ClassParameter.from(int.class, flags),
+                    ClassParameter.from(AssetsProvider.class, assets)));
+  }
+  // END-INTERNAL
 
   @Implementation
   protected static @NonNull ApkAssets loadOverlayFromPath(@NonNull String idmapPath, boolean system)
@@ -242,11 +300,11 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
   }
 
   // BEGIN-INTERNAL
-  // static jlong NativeLoad(JNIEnv* env, jclass /*clazz*/, jstring java_path, jboolean system,
-//                         jboolean force_shared_lib, jboolean overlay, jboolean for_loader) {
+  // static jlong NativeLoad(JNIEnv* env, jclass /*clazz*/, const format_type_t format,
+  //                        jstring java_path, const jint property_flags, jobject assets_provider)
   @Implementation(minSdk = Build.VERSION_CODES.R)
-  protected static long nativeLoad(String java_path, boolean system,
-          boolean force_shared_lib, boolean overlay, boolean for_loader) throws IOException {
+  protected static long nativeLoad(int format, String java_path,
+          int flags, AssetsProvider asset) throws IOException {
     String path = java_path;
     if (path == null) {
       return 0;
@@ -254,6 +312,9 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
 
     ATRACE_NAME(String.format("LoadApkAssets(%s)", path));
 
+    boolean system = (flags & PROPERTY_SYSTEM) == PROPERTY_SYSTEM;
+    boolean overlay = (flags & PROPERTY_OVERLAY) == PROPERTY_OVERLAY;
+    boolean force_shared_lib = (flags & PROPERTY_DYNAMIC) == PROPERTY_DYNAMIC;
     CppApkAssets apk_assets;
     try {
       if (overlay) {
@@ -316,13 +377,13 @@ public class ShadowArscApkAssets9 extends ShadowApkAssets {
   }
 
   // BEGIN-INTERNAL
-  // static jlong NativeLoadFromFd(JNIEnv* env, jclass /*clazz*/, jobject file_descriptor,
-//                               jstring friendly_name, jboolean system, jboolean force_shared_lib,
-//                               jboolean for_loader) {
+  // static jlong NativeLoadFromFd(JNIEnv* env, jclass /*clazz*/, const format_type_t format,
+  //                              jobject file_descriptor, jstring friendly_name,
+  //                              const jint property_flags, jobject assets_provider) {
   @Implementation(minSdk = Build.VERSION_CODES.R)
-  protected static long nativeLoadFromFd(FileDescriptor file_descriptor,
-          String friendly_name, boolean system, boolean force_shared_lib, boolean for_loader) {
-    String friendly_name_utf8 = friendly_name;
+  protected static long nativeLoadFromFd(int format, FileDescriptor fd,
+          String friendlyName, int flags, AssetsProvider asset) {
+    String friendly_name_utf8 = friendlyName;
     if (friendly_name_utf8 == null) {
       return 0;
     }
