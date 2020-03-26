@@ -10,6 +10,7 @@ import static android.os.Build.VERSION_CODES.R;
 import static org.robolectric.shadow.api.Shadow.directlyOn;
 
 import android.Manifest.permission;
+import android.annotation.NonNull;
 import android.annotation.UserIdInt;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -23,9 +24,12 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
@@ -521,6 +525,29 @@ public class ShadowUserManager {
     userInfoMap.remove(userHandle);
     return true;
   }
+
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = R)
+  protected UserInfo createProfileForUserEvenWhenDisallowed(String name,
+          @NonNull String userType, @UserInfo.UserInfoFlag int flags, @UserIdInt int userId,
+          String[] disallowedPackages) throws UserManager.UserOperationException {
+    List<UserInfo> userIdProfiles = profiles.computeIfAbsent(userId, ignored -> new ArrayList<>());
+    int profileUserId = userIdProfiles.isEmpty() ? 10 : findMaxProfileId(userIdProfiles) + 1;
+    UserInfo profileUserInfo = new UserInfo(profileUserId, name, flags);
+    userIdProfiles.add(profileUserInfo);
+    profileToParent.put(profileUserId, userId);
+    addUserProfile(UserHandle.of(profileUserId));
+    return profileUserInfo;
+  }
+
+  /** Assumes the given list of profile infos is non-empty. */
+  private int findMaxProfileId(List<UserInfo> userIdProfiles) {
+    return Collections.max(
+            userIdProfiles.stream()
+                    .map(userInfo -> userInfo.id)
+                    .collect(Collectors.toList()));
+  }
+  // END-INTERNAL
 
   /**
    * Switches the current user to {@code userHandle}.
