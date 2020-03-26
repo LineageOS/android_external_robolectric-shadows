@@ -1107,7 +1107,7 @@ public class ShadowApplicationPackageManager extends ShadowPackageManager {
   @Implementation(minSdk = N)
   protected PackageInfo getPackageInfoAsUser(String packageName, int flags, int userId)
       throws NameNotFoundException {
-    return null;
+    return getPackageInfo(packageName, flags);
   }
 
   @Implementation

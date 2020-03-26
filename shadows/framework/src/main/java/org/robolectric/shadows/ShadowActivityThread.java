@@ -6,7 +6,10 @@ import android.app.ActivityThread;
 import android.content.ComponentName;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ParceledListSlice;
 import android.os.RemoteException;
+import android.os.UserHandle;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -74,6 +77,15 @@ public class ShadowActivityThread {
               } catch (PackageManager.NameNotFoundException e) {
                 throw new RemoteException(e.getMessage());
               }
+            } else if (method.getName().equals("getInstalledApplications")) {
+              int flags = (Integer) args[0];
+              int userId = (Integer) args[1];
+              return new ParceledListSlice<>(
+                  RuntimeEnvironment.application
+                      .getApplicationContext()
+                      .createContextAsUser(UserHandle.of(userId), /* flags= */ 0)
+                      .getPackageManager()
+                      .getInstalledApplications(flags));
             } else if (method.getName().equals("notifyPackageUse")) {
               return null;
             } else if (method.getName().equals("getPackageInstaller")) {
