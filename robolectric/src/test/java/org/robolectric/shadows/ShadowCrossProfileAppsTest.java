@@ -1,15 +1,23 @@
 package org.robolectric.shadows;
 
 import static android.Manifest.permission.INTERACT_ACROSS_PROFILES;
+import static android.app.AppOpsManager.MODE_ALLOWED;
+import static android.app.AppOpsManager.MODE_DEFAULT;
 import static android.os.Build.VERSION_CODES.P;
 import static android.os.Build.VERSION_CODES.Q;
+import static android.os.Build.VERSION_CODES.R;
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
 import android.app.Application;
+import android.app.AppOpsManager;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.CrossProfileApps;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.os.UserHandle;
@@ -28,6 +36,7 @@ public class ShadowCrossProfileAppsTest {
   private final Application application = ApplicationProvider.getApplicationContext();
   private final CrossProfileApps crossProfileApps =
       application.getSystemService(CrossProfileApps.class);
+  private final PackageManager packageManager = ((Context) application).getPackageManager();
 
   private final UserHandle userHandle1 = UserHandle.of(10);
   private final UserHandle userHandle2 = UserHandle.of(11);
@@ -338,6 +347,35 @@ public class ShadowCrossProfileAppsTest {
 
     assertThat(shadowOf(crossProfileApps).peekNextStartedActivity()).isNull();
   }
+
+  // BEGIN-INTERNAL
+  @Test
+  @Config(minSdk = R)
+  public void clearInteractAcrossProfilesAppOps_clearsAppOps() {
+    String testPackage1 = "com.example.testpackage1";
+    String testPackage2 = "com.example.testpackage2";
+    shadowOf(packageManager).installPackage(buildTestPackageInfo(testPackage1));
+    shadowOf(packageManager).installPackage(buildTestPackageInfo(testPackage2));
+    shadowOf(crossProfileApps).setInteractAcrossProfilesAppOp(testPackage1, MODE_ALLOWED);
+    shadowOf(crossProfileApps).setInteractAcrossProfilesAppOp(testPackage2, MODE_ALLOWED);
+
+    shadowOf(crossProfileApps).clearInteractAcrossProfilesAppOps();
+
+    assertThat(shadowOf(crossProfileApps).getInteractAcrossProfilesAppOp(testPackage1))
+            .isEqualTo(MODE_DEFAULT);
+    assertThat(shadowOf(crossProfileApps).getInteractAcrossProfilesAppOp(testPackage2))
+            .isEqualTo(MODE_DEFAULT);
+  }
+
+  private PackageInfo buildTestPackageInfo(String packageName) {
+    PackageInfo packageInfo = new PackageInfo();
+    packageInfo.packageName = packageName;
+    packageInfo.applicationInfo = new ApplicationInfo();
+    packageInfo.applicationInfo.packageName = packageName;
+    packageInfo.applicationInfo.name = "test";
+    return packageInfo;
+  }
+  // END-INTERNAL
 
   private static void assertThrowsSecurityException(Runnable runnable) {
     assertThrows(SecurityException.class, runnable);

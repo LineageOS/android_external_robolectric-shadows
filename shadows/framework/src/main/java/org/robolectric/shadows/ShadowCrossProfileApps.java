@@ -320,6 +320,23 @@ public class ShadowCrossProfileApps {
     }
   }
 
+  // BEGIN-INTERNAL
+  @Implementation(minSdk = R)
+  protected void clearInteractAcrossProfilesAppOps() {
+    findAllPackageNames().forEach(
+        packageName -> setInteractAcrossProfilesAppOp(
+            packageName, AppOpsManager.opToDefaultMode(INTERACT_ACROSS_PROFILES_APPOP)));
+  }
+
+  private List<String> findAllPackageNames() {
+    return context.getPackageManager()
+        .getInstalledApplications(/* flags= */ 0)
+        .stream()
+        .map(applicationInfo -> applicationInfo.packageName)
+        .collect(Collectors.toList());
+  }
+  // END-INTERNAL
+
   @Implementation
   protected boolean canConfigureInteractAcrossProfiles(@NonNull String packageName) {
     return configurableInteractAcrossProfilePackages.contains(packageName);
