@@ -136,6 +136,18 @@ public class ShadowUserManagerTest {
   }
 
   @Test
+  @Config(minSdk = N)
+  public void isManagedProfileWithHandle() {
+    shadowOf(userManager).addUser(TEST_USER_HANDLE, "secondary user", 0);
+    shadowOf(userManager).addProfile(
+            TEST_USER_HANDLE,
+            PROFILE_USER_HANDLE,
+            "another managed profile",
+            ShadowUserManager.FLAG_MANAGED_PROFILE);
+    assertThat(userManager.isManagedProfile(PROFILE_USER_HANDLE)).isTrue();
+  }
+
+  @Test
   @Config(minSdk = LOLLIPOP)
   public void enforcePermissionChecks() throws Exception {
     shadowOf(userManager).enforcePermissionChecks(true);
