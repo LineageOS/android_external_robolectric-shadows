@@ -21,6 +21,7 @@ import static android.content.pm.PackageManager.MATCH_DIRECT_BOOT_UNAWARE;
 import static android.os.Build.VERSION_CODES.P;
 import static android.os.Build.VERSION_CODES.Q;
 import static android.os.Build.VERSION_CODES.R;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.Manifest;
@@ -36,15 +37,23 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.CrossProfileApps;
 import android.content.pm.ICrossProfileApps;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
+
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
+import org.robolectric.annotation.Resetter;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,9 +66,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
-import org.robolectric.annotation.Implementation;
-import org.robolectric.annotation.Implements;
-import org.robolectric.annotation.Resetter;
 
 /** Robolectric implementation of {@link CrossProfileApps}. */
 @Implements(value = CrossProfileApps.class, minSdk = P)
@@ -340,6 +346,21 @@ public class ShadowCrossProfileApps {
   @Implementation
   protected boolean canConfigureInteractAcrossProfiles(@NonNull String packageName) {
     return configurableInteractAcrossProfilePackages.contains(packageName);
+  }
+
+  @Implementation
+  protected boolean canUserAttemptToConfigureInteractAcrossProfiles(@NonNull String packageName) {
+    PackageInfo packageInfo;
+    try {
+      packageInfo = packageManager.getPackageInfo(packageName, /* flags= */ 0);
+    } catch (PackageManager.NameNotFoundException e) {
+      return false;
+    }
+    if (packageInfo == null || packageInfo.requestedPermissions == null) {
+      return false;
+    }
+    return Arrays.asList(packageInfo.requestedPermissions).contains(
+            Manifest.permission.INTERACT_ACROSS_PROFILES);
   }
 
   @Resetter
