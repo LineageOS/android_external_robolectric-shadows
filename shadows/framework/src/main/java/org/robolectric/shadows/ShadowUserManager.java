@@ -7,6 +7,7 @@ import static android.os.Build.VERSION_CODES.M;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.N_MR1;
 import static android.os.Build.VERSION_CODES.R;
+
 import static org.robolectric.shadow.api.Shadow.directlyOn;
 
 import android.Manifest.permission;
@@ -20,21 +21,23 @@ import android.os.IUserManager;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
 import org.robolectric.annotation.Resetter;
 import org.robolectric.util.ReflectionHelpers.ClassParameter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Robolectric implementation of {@link android.os.UserManager}.
@@ -51,6 +54,7 @@ public class ShadowUserManager {
   public static final int FLAG_ADMIN = UserInfo.FLAG_ADMIN;
   public static final int FLAG_GUEST = UserInfo.FLAG_GUEST;
   public static final int FLAG_RESTRICTED = UserInfo.FLAG_RESTRICTED;
+  public static final int FLAG_MANAGED_PROFILE = UserInfo.FLAG_MANAGED_PROFILE;
 
   private static Map<Integer, Integer> userPidMap = new HashMap<>();
 
@@ -138,8 +142,10 @@ public class ShadowUserManager {
   /** Add a profile to be returned by {@link #getProfiles(int)}.**/
   public void addProfile(
           int userHandle, int profileUserHandle, String profileName, int profileFlags) {
+    UserInfo userInfo = new UserInfo(profileUserHandle, profileName, profileFlags);
     profiles.putIfAbsent(userHandle, new ArrayList<>());
-    profiles.get(userHandle).add(new UserInfo(profileUserHandle, profileName, profileFlags));
+    profiles.get(userHandle).add(userInfo);
+    userInfoMap.put(profileUserHandle, userInfo);
     profileToParent.put(profileUserHandle, userHandle);
   }
 
@@ -183,6 +189,27 @@ public class ShadowUserManager {
                       "managed profile outside your profile group");
     }
     return managedProfile;
+  }
+
+  /**
+   * If permissions are enforced (see {@link #enforcePermissionChecks(boolean)}) and the application
+   * doesn't have the {@link android.Manifest.permission#MANAGE_USERS} permission, throws a {@link
+   * SecurityManager} exception.
+   *
+   * @return true if the profile added has FLAG_MANAGED_PROFILE
+   * @see #enforcePermissionChecks(boolean)
+   * @see #addProfile(int, int, String, int)
+   * @see #addUser(int, String, int)
+   */
+  @Implementation(minSdk = N)
+  protected boolean isManagedProfile(int userHandle) {
+    if (enforcePermissions && !hasManageUsersPermission()) {
+      throw new SecurityException(
+              "You need MANAGE_USERS permission to: check if specified user a "
+                      + "managed profile outside your profile group");
+    }
+    UserInfo info = getUserInfo(userHandle);
+    return info != null && ((info.flags & FLAG_MANAGED_PROFILE) == FLAG_MANAGED_PROFILE);
   }
 
   // BEGIN-INTERNAL
