@@ -52,6 +52,8 @@ import android.os.IUserManager;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.os.storage.IStorageManager;
+import android.service.persistentdata.IPersistentDataBlockService;
+
 import com.android.internal.app.IAppOpsService;
 import com.android.internal.app.IBatteryStats;
 import com.android.internal.appwidget.IAppWidgetService;
@@ -166,6 +168,10 @@ public class ShadowServiceManager {
       map.put(
           Context.MEDIA_SESSION_SERVICE,
           createDeepBinder(ISessionManager.class, "android.media.session.ISessionManager"));
+      map.put(
+          Context.PERSISTENT_DATA_BLOCK_SERVICE,
+          createBinder(IPersistentDataBlockService.class,
+                  "android.service.persistentdata.IPersistentDataBlockService"));
     }
     if (RuntimeEnvironment.getApiLevel() >= M) {
       map.put(
